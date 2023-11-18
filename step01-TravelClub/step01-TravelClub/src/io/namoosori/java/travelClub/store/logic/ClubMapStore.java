@@ -4,6 +4,7 @@ import io.namoosori.java.travelClub.entity.TravelClub;
 import io.namoosori.java.travelClub.store.ClubStore;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ClubMapStore implements ClubStore {
     private Map<String, TravelClub> clubMap;
@@ -24,13 +25,16 @@ public class ClubMapStore implements ClubStore {
 
     @Override
     public List<TravelClub> retrieveAllByName(String clubName) {
-        List<TravelClub> foundClubs = new ArrayList<>();
 
-        for (TravelClub club : this.clubMap.values()) {
-            if (club.getClubName().equals(clubName)) {
-                foundClubs.add(club);
-            }
-        }
+        return clubMap.values().stream().filter(club -> club.getClubName().equals(clubName)).collect(Collectors.toList());
+
+//        List<TravelClub> foundClubs = new ArrayList<>();
+//
+//        for (TravelClub club : this.clubMap.values()) {
+//            if (club.getClubName().equals(clubName)) {
+//                foundClubs.add(club);
+//            }
+//        }
 
 //        Iterator<TravelClub> iterator = this.clubMap.values().iterator();
 //        while (iterator.hasNext()) {
@@ -39,7 +43,7 @@ public class ClubMapStore implements ClubStore {
 //                foundClubs.add(club);
 //            }
 //        }
-        return null;
+//        return foundClubs;
     }
 
     @Override
