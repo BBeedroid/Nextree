@@ -1,5 +1,6 @@
 package com.example.backend.uils;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
@@ -14,8 +15,10 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)  //Auditing(자동으로 값 매핑) 기능 추가
 public class BaseTimeEntity {
     @CreatedDate
+    @Column(name = "CREATED_AT")
     private LocalDateTime createdTime;
 
     @LastModifiedDate
+    @Column(name = "UPDATED_AT")
     private LocalDateTime updatedTime;
 }

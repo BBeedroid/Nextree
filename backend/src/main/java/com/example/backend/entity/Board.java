@@ -9,6 +9,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "BOARD")
 @Data
@@ -31,6 +34,9 @@ public class Board extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CLUB_ID")
     private Club club;
+
+    @OneToMany(mappedBy = "board")
+    private List<Post> posts = new ArrayList<>();
 
     public BoardDTO EntityToDTO() {
         return BoardDTO.builder()
