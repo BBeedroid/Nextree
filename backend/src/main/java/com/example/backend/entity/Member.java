@@ -1,7 +1,7 @@
 package com.example.backend.entity;
 
 import com.example.backend.dto.MemberDTO;
-import com.example.backend.uils.BaseTimeEntity;
+import com.example.backend.util.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

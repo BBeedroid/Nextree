@@ -1,9 +1,8 @@
 package com.example.backend.entity;
 
 import com.example.backend.dto.PostDTO;
-import com.example.backend.uils.BaseTimeEntity;
+import com.example.backend.util.BaseTimeEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

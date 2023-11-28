@@ -1,7 +1,7 @@
 package com.example.backend.entity;
 
 import com.example.backend.dto.ClubDTO;
-import com.example.backend.uils.BaseTimeEntity;
+import com.example.backend.util.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
