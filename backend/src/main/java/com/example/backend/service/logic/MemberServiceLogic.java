@@ -51,9 +51,12 @@ public class MemberServiceLogic implements MemberService {
 
     @Override
     @Transactional
-    public MemberDTO modify(MemberDTO memberDTO) throws InvalidEmailException {
-        Member targetMember = Optional.ofNullable(memberStore.findByMemberEmail(memberDTO.getMemberEmail()))
+    public MemberDTO modify(Long memberId, MemberDTO memberDTO) throws InvalidEmailException {
+        Optional.ofNullable(memberStore.findByMemberEmail(memberDTO.getMemberEmail()))
                 .orElseThrow(() -> new NoSuchMemberException("No such member with email : " + memberDTO.getMemberEmail()));
+
+        Member targetMember = memberStore.findById(memberId)
+                        .orElseThrow(() -> new NoSuchMemberException("No such member with id : " + memberId));
 
         targetMember.setMemberNickname(memberDTO.getMemberNickname());
         targetMember.setMemberTel(memberDTO.getMemberTel());
