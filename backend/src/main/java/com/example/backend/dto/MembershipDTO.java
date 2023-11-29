@@ -28,6 +28,13 @@ public class MembershipDTO {
 
     private long clubId;
 
+    public MembershipDTO(Membership membership) {
+        this.role = membership.getRole().toString();
+        this.memberId = membership.getMember().getMemberId();
+        this.clubId = membership.getClub().getClubId();
+        this.createdTime = membership.getCreatedTime();
+    }
+
     public Membership DTOToEntity() {
         return Membership.builder()
                 .membershipId(this.membershipId)
