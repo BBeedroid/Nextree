@@ -4,20 +4,52 @@ import com.example.backend.entity.Club;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class ClubDTO {
     private long clubId;
+
     private String clubName;
+
     private String clubIntro;
+
     private LocalDateTime createdTime;
+
     private LocalDateTime updatedTime;
+
+    private List<MembershipDTO> memberships;
+
+    private ClubDTO() {
+        this.memberships = new ArrayList<MembershipDTO>();
+    }
+
+    public ClubDTO(String clubName, String clubIntro) {
+        this();
+        this.clubName = clubName;
+        this.clubIntro = clubIntro;
+    }
+
+    public ClubDTO(Club club) {
+        this(club.getClubName(), club.getClubIntro());
+        this.clubId = club.getClubId();
+        this.createdTime = club.getCreatedTime();
+        this.updatedTime = club.getUpdatedTime();
+
+        this.memberships = Optional.ofNullable(club.getMemberships())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(MembershipDTO::new)
+                .collect(Collectors.toList());
+    }
 
     public Club DTOToEntity() {
         return Club.builder()
