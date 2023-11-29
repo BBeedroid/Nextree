@@ -1,4 +1,4 @@
-package com.example.backend.uils;
+package com.example.backend.util;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
