@@ -2,6 +2,7 @@ package com.example.backend.entity;
 
 import com.example.backend.dto.MemberDTO;
 import com.example.backend.util.BaseTimeEntity;
+import com.example.backend.util.InvalidEmailException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,16 +39,16 @@ public class Member extends BaseTimeEntity {
     @Column(name = "MEMBER_BIRTH_DATE")
     private String memberBirthDate;
 
-    @Column(name = "MEMBER_ADDR1")
-    private String memberAddr1;
+    @Column(name = "MEMBER_ZIPCODE")
+    private String memberZipcode;
 
-    @Column(name = "MEMBER_ADDR2")
-    private String memberAddr2;
+    @Column(name = "MEMBER_ADDRESS")
+    private String memberAddress;
 
-    @Column(name = "MEMBER_ADDR3")
-    private String memberAddr3;
+    @Column(name = "MEMBER_DETAIL_ADDRESS")
+    private String memberDetailAddress;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Membership> memberships = new ArrayList<>();
 
     public MemberDTO EntityToDTO() {
@@ -58,11 +59,18 @@ public class Member extends BaseTimeEntity {
                 .memberNickname(this.memberNickname)
                 .memberTel(this.memberTel)
                 .memberBirthDate(this.memberBirthDate)
-                .memberAddr1(this.memberAddr1)
-                .memberAddr2(this.memberAddr2)
-                .memberAddr3(this.memberAddr3)
+                .memberZipcode(this.memberZipcode)
+                .memberAddress(this.memberAddress)
+                .memberDetailAddress(this.memberDetailAddress)
                 .createdTime(this.getCreatedTime())
                 .updatedTime(this.getUpdatedTime())
                 .build();
+    }
+
+    public Member(String memberEmail, String memberPassword, String memberNickname) throws InvalidEmailException {
+        this();
+        setMemberEmail(memberEmail);
+        this.memberPassword = memberPassword;
+        this.memberNickname = memberNickname;
     }
 }
