@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ClubStore extends JpaRepository<Club, Long> {
+    Club findByClubName(String clubName);
 }
