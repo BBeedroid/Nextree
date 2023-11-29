@@ -45,7 +45,7 @@ public class ClubServiceLogic implements ClubService {
     }
 
     @Override
-    public ClubDTO find(Long clubId) {
+    public ClubDTO findClubById(Long clubId) {
         return clubStore.findById(clubId)
                 .map(club -> new ClubDTO(club))
                 .orElseThrow(() -> new NoSuchClubException("No such club with id : " + clubId));
@@ -60,13 +60,24 @@ public class ClubServiceLogic implements ClubService {
 
     @Override
     @Transactional
-    public ClubDTO modify(ClubDTO clubDTO) {
-        return null;
+    public ClubDTO modify(Long clubId, ClubDTO clubDTO) {
+        Optional.ofNullable(clubStore.findByClubName(clubDTO.getClubName()))
+                .ifPresent(club -> { throw new ClubDuplicationException("Club already exists with name : " + clubDTO.getClubName());});
+        Club targetClub = clubStore.findById(clubId)
+                .orElseThrow(() -> new NoSuchClubException("No such club with id : " + clubId));
+
+        targetClub.setClubName(clubDTO.getClubName());
+        targetClub.setClubIntro(clubDTO.getClubIntro());
+
+        return new ClubDTO(targetClub);
     }
 
     @Override
     @Transactional
     public void remove(Long clubId) {
+        Club club = clubStore.findById(clubId)
+                .orElseThrow(() -> new NoSuchClubException("No such club with id : " + clubId));
 
+        clubStore.delete(club);
     }
 }

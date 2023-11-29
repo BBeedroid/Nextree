@@ -32,7 +32,7 @@ public class Club extends BaseTimeEntity {
     @Size(min = 10)
     private String clubIntro;
 
-    @OneToMany(mappedBy = "club")
+    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Membership> memberships = new ArrayList<>();
 
     public ClubDTO EntityToDTO() {

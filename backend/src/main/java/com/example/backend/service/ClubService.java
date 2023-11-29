@@ -4,8 +4,8 @@ import com.example.backend.dto.ClubDTO;
 
 public interface ClubService {
     void register(ClubDTO clubDTO, Long memberId);
-    ClubDTO find(Long clubId);
+    ClubDTO findClubById(Long clubId);
     ClubDTO findClubByName(String clubName);
-    ClubDTO modify(ClubDTO clubDTO);
+    ClubDTO modify(Long clubId, ClubDTO clubDTO);
     void remove(Long clubId);
 }
