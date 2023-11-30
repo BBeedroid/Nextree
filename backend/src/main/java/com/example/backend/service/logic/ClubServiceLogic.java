@@ -28,7 +28,7 @@ public class ClubServiceLogic implements ClubService {
 
     @Override
     @Transactional
-    public void register(ClubDTO clubDTO, Long memberId) {
+    public void register(Long memberId, ClubDTO clubDTO) {
         Optional.ofNullable(clubStore.findByClubName(clubDTO.getClubName()))
                 .ifPresent(dto -> {throw new ClubDuplicationException("Club already exists with name : " + clubDTO.getClubName());});
         Club club = clubDTO.DTOToEntity();

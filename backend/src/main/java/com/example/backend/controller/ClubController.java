@@ -20,10 +20,11 @@ public class ClubController {
     private final ClubService clubService;
 
     @PostMapping
-    public ResponseEntity<?> createClub(@RequestBody ClubDTO clubDTO, @RequestParam Long memberId) {
+    public ResponseEntity<?> createClub(@RequestParam("memberId") Long memberId,
+                                        @RequestBody ClubDTO clubDTO) {
         ResponseDTO<ClubDTO> responseDTO = new ResponseDTO<>();
         try {
-            clubService.register(clubDTO, memberId);
+            clubService.register(memberId, clubDTO);
             responseDTO.setItem(clubDTO);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok(responseDTO);
@@ -65,7 +66,8 @@ public class ClubController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateClub(@RequestParam Long clubId, @RequestBody ClubDTO clubDTO) {
+    public ResponseEntity<?> updateClub(@RequestParam("clubId") Long clubId,
+                                        @RequestBody ClubDTO clubDTO) {
         ResponseDTO<ClubDTO> responseDTO = new ResponseDTO<>();
         try {
             ClubDTO updatedClubDTO = clubService.modify(clubId, clubDTO);
