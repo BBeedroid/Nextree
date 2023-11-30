@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class MemberServiceLogic implements MemberService {
     private final MemberStore memberStore;
-    private final MembershipService membershipService;
 
     @Override
     @Transactional
@@ -51,9 +50,12 @@ public class MemberServiceLogic implements MemberService {
 
     @Override
     @Transactional
-    public MemberDTO modify(MemberDTO memberDTO) throws InvalidEmailException {
-        Member targetMember = Optional.ofNullable(memberStore.findByMemberEmail(memberDTO.getMemberEmail()))
+    public MemberDTO modify(Long memberId, MemberDTO memberDTO) throws InvalidEmailException {
+        Optional.ofNullable(memberStore.findByMemberEmail(memberDTO.getMemberEmail()))
                 .orElseThrow(() -> new NoSuchMemberException("No such member with email : " + memberDTO.getMemberEmail()));
+
+        Member targetMember = memberStore.findById(memberId)
+                        .orElseThrow(() -> new NoSuchMemberException("No such member with id : " + memberId));
 
         targetMember.setMemberNickname(memberDTO.getMemberNickname());
         targetMember.setMemberTel(memberDTO.getMemberTel());
@@ -72,5 +74,17 @@ public class MemberServiceLogic implements MemberService {
                 .orElseThrow(() -> new NoSuchMemberException("No such member with id: " + memberId));
 
         memberStore.delete(member);
+    }
+
+    @Override
+    public Member login(String memberEmail, String memberPassword) {
+        Member loginUser = Optional.ofNullable(memberStore.findByMemberEmail(memberEmail))
+                .orElseThrow(() -> new NoSuchEmailException("User Email or password is wrong."));
+
+        if (!loginUser.getMemberPassword().equals(memberPassword)) {
+            throw new PasswordNotMatchException("User Email or password is wrong.");
+        }
+
+        return loginUser;
     }
 }

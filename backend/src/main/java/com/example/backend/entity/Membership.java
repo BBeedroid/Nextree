@@ -42,4 +42,18 @@ public class Membership extends BaseTimeEntity {
                 .clubId(this.club.getClubId())
                 .build();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("membershipId=").append(membershipId);
+        builder.append(", role=").append(role.name());
+        builder.append(", memberId=").append(member != null ? member.getMemberId() : null);
+        builder.append(", clubId=").append(club != null ? club.getClubId() : null);
+        builder.append(", createdDate").append(getCreatedTime());
+        builder.append(", updatedDtate").append(getUpdatedTime());
+
+        return builder().toString();
+    }
 }

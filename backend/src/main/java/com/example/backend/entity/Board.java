@@ -35,7 +35,7 @@ public class Board extends BaseTimeEntity {
     @JoinColumn(name = "CLUB_ID")
     private Club club;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
 
     public BoardDTO EntityToDTO() {
