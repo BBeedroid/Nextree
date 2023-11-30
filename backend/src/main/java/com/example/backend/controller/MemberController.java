@@ -67,10 +67,10 @@ public class MemberController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateMember(@RequestBody MemberDTO memberDTO) {
+    public ResponseEntity<?> updateMember(@RequestParam Long memberId, @RequestBody MemberDTO memberDTO) {
         ResponseDTO<MemberDTO> responseDTO = new ResponseDTO<>();
         try {
-            MemberDTO updatedMemberDTO = memberService.modify(memberDTO);
+            MemberDTO updatedMemberDTO = memberService.modify(memberId, memberDTO);
             responseDTO.setItem(updatedMemberDTO);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok(responseDTO);
@@ -97,4 +97,6 @@ public class MemberController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
+
 }

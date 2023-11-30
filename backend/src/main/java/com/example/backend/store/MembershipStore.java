@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MembershipStore extends JpaRepository<Membership, Long> {
+    Membership findByClubClubIdAndMemberMemberId(Long clubId, Long memberId);
 }
