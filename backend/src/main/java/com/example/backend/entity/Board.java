@@ -28,9 +28,6 @@ public class Board extends BaseTimeEntity {
     @Size(min = 3)
     private String boardTitle;
 
-    @Column(name = "BOARD_INTRO")
-    private String boardIntro;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CLUB_ID")
     private Club club;
@@ -42,7 +39,6 @@ public class Board extends BaseTimeEntity {
         return BoardDTO.builder()
                 .boardId(this.boardId)
                 .boardTitle(this.boardTitle)
-                .boardIntro(this.boardIntro)
                 .createdTime(this.getCreatedTime())
                 .updatedTime(this.getUpdatedTime())
                 .clubId(this.club.getClubId())

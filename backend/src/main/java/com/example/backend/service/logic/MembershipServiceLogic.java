@@ -56,7 +56,7 @@ public class MembershipServiceLogic implements MembershipService {
 
     @Override
     public MembershipDTO findMembership(Long clubId, Long memberId) {
-        return Optional.ofNullable(membershipStore.findByClubClubIdAndMemberMemberId(clubId, memberId))
+        return Optional.ofNullable(membershipStore.findByClub_ClubIdAndMember_MemberId(clubId, memberId))
                 .map(membership -> new MembershipDTO(membership))
                 .orElseThrow(() -> new NoSuchMembershipException(
                         String.format("No such membership with clubId : [%s] memberId : [%s]", clubId, memberId)));
@@ -90,7 +90,7 @@ public class MembershipServiceLogic implements MembershipService {
         memberStore.findById(memberId)
                 .orElseThrow(() -> new NoSuchMemberException("No such member with id : " + memberId));
 
-        Membership targetMembership = Optional.ofNullable(membershipStore.findByClubClubIdAndMemberMemberId(clubId, memberId))
+        Membership targetMembership = Optional.ofNullable(membershipStore.findByClub_ClubIdAndMember_MemberId(clubId, memberId))
                         .orElseThrow(() -> new NoSuchMembershipException(
                                 String.format("No such membership with clubId : [%s] memberId : [%s]", clubId, memberId)));
 
@@ -101,21 +101,18 @@ public class MembershipServiceLogic implements MembershipService {
 
     @Override
     @Transactional
-    public void remove(Long clubId, Long membershipId, Long currentUserId) {
-        Club foundclub = clubStore.findById(clubId)
+    public void remove(Long clubId, Long currentUserId) {
+        clubStore.findById(clubId)
                 .orElseThrow(() -> new NoSuchClubException("No such club with id : " + clubId));
-        Membership foundMembership = membershipStore.findById(membershipId)
-                .orElseThrow(() -> new NoSuchMembershipException("No such membership with id : " + membershipId));
+        Membership foundMembership = Optional.ofNullable(membershipStore.findByClub_ClubIdAndMember_MemberId(clubId, currentUserId))
+                .orElseThrow(() -> new NoSuchMembershipException(
+                        String.format("No such membership with clubId : [%s] memberId : [%s]", clubId, currentUserId)));
         Role currentUserRole = getCurrentUserRoleInClub(clubId, currentUserId);
 
-        if (foundMembership.getClub().getClubId() != clubId) {
-            throw new NoSuchMembershipException(String.format("membership with id [%s] does not belong to club with id [%s]", membershipId, clubId));
-        }
-
         if (currentUserRole == Role.PRESIDENT || foundMembership.getMember().getMemberId() == currentUserId) {
-            membershipStore.delete(foundMembership);
+            membershipStore.deleteByClub_IdAndMember_Id(clubId, currentUserId);
         } else {
-            throw new NoPermissionToRemoveMembershipException("Do not have permission to delete this membership.");
+            throw new NoPermissionToRemoveMembershipException("Does not have permission to delete this membership.");
         }
     }
 
