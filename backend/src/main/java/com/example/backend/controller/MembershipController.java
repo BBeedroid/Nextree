@@ -106,19 +106,17 @@ public class MembershipController {
 
     @DeleteMapping
     public ResponseEntity<?> deleteMembership(@RequestParam("clubId") Long clubId,
-                                              @RequestParam("membershipId") Long membershipId,
                                               HttpSession session) {
         ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
         try {
             Long currentUserId = (Long) session.getAttribute("loginUserId");
-
             if (currentUserId == null) {
                 throw new AuthenticationException("User is not authenticated.");
             }
 
-            membershipService.remove(clubId, membershipId, currentUserId);
+            membershipService.remove(clubId, currentUserId);
             Map<String, String> returnMap = new HashMap<>();
-            returnMap.put("message", "Successfully removed membership with id : " + membershipId);
+            returnMap.put("message", "Successfully removed the membership.");
             responseDTO.setItem(returnMap);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);

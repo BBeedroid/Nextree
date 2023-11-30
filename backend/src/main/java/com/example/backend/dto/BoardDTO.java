@@ -18,8 +18,6 @@ public class BoardDTO {
 
     private String boardTitle;
 
-    private String boardIntro;
-
     private LocalDateTime createdTime;
 
     private LocalDateTime updatedTime;
@@ -30,7 +28,6 @@ public class BoardDTO {
         return Board.builder()
                 .boardId(this.boardId)
                 .boardTitle(this.boardTitle)
-                .boardIntro(this.boardIntro)
                 .club(Club.builder()
                         .clubId(this.clubId)
                         .build())

@@ -5,7 +5,7 @@ import com.example.backend.dto.BoardDTO;
 import java.util.List;
 
 public interface BoardService {
-    String register(BoardDTO boardDTO);
+    void register(Long clubId, BoardDTO boardDTO, Long currentUserId);
     BoardDTO find(Long boardId);
     List<BoardDTO> findByTitle(String boardTitle);
     BoardDTO findByClubName(String clubName);
