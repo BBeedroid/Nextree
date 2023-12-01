@@ -34,10 +34,6 @@ public class Post extends BaseTimeEntity {
     private Board board;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CLUB_ID")
-    private Club club;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
@@ -50,7 +46,6 @@ public class Post extends BaseTimeEntity {
                 .createdTime(this.getCreatedTime())
                 .updatedTime(this.getUpdatedTime())
                 .boardId(this.board.getBoardId())
-                .clubId(this.club.getClubId())
                 .memberId(this.member.getMemberId())
                 .build();
     }
