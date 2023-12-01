@@ -10,7 +10,6 @@ public interface PostService {
     List<PostDTO> findByTitleInBoard(Long boardId, String postTitle);
     List<PostDTO> findByBoard(Long boardId);
     List<PostDTO> findByClubAndMember(Long clubId, Long memberId);
-    PostDTO modify(PostDTO postDTO, Long currentUserId);
-    void remove(Long postId);
-    void removeAllIn(Long boardId);
+    PostDTO modify(Long postId, PostDTO postDTO, Long currentUserId);
+    void remove(Long postId, Long currentUserId);
 }

@@ -1,10 +1,7 @@
 package com.example.backend.service.logic;
 
 import com.example.backend.dto.PostDTO;
-import com.example.backend.entity.Board;
-import com.example.backend.entity.Club;
-import com.example.backend.entity.Member;
-import com.example.backend.entity.Post;
+import com.example.backend.entity.*;
 import com.example.backend.service.PostService;
 import com.example.backend.store.BoardStore;
 import com.example.backend.store.ClubStore;
@@ -106,19 +103,45 @@ public class PostServiceLogic implements PostService {
 
     @Override
     @Transactional
-    public PostDTO modify(PostDTO postDTO, Long currentUserId) {
-        return null;
+    public PostDTO modify(Long postId, PostDTO postDTO, Long currentUserId) {
+        Post targetPost = postStore.findById(postId)
+                .orElseThrow(() -> new NoSuchPostingException("No such post with id : " + postId));
+
+        if (targetPost.getMember().getMemberId() != currentUserId) {
+            throw new NoAuthorityForModifyPost("Only the writer can modify the post.");
+        }
+
+        targetPost.setPostTitle(postDTO.getPostTitle());
+        targetPost.setPostContent(postDTO.getPostContent());
+
+        return new PostDTO(targetPost);
     }
 
     @Override
     @Transactional
-    public void remove(Long postId) {
+    public void remove(Long postId, Long currentUserId) {
+        Post post = postStore.findById(postId)
+                .orElseThrow(() -> new NoSuchPostingException("No such post with id : " + postId));
 
+        Role currentUserRole = getCurrentUserRoleInClub(post.getBoard().getClub().getClubId(), currentUserId);
+        if (!(currentUserRole == Role.PRESIDENT || currentUserId == post.getMember().getMemberId())) {
+            throw new NoAuthorityForDeletePost("Only the writer or the president can delete the post.");
+        }
+
+        System.out.println("role : " + currentUserRole);
+        System.out.println("id : " + currentUserId);
+
+        postStore.delete(post);
     }
 
-    @Override
-    @Transactional
-    public void removeAllIn(Long boardId) {
+    private Role getCurrentUserRoleInClub(Long clubId, Long currentUserId) {
+        Club club = clubStore.findById(clubId)
+                .orElseThrow(() -> new NoSuchClubException("No such club with id : " + clubId));
 
+        return club.getMemberships().stream()
+                .filter(membership -> membership.getMember().getMemberId() == currentUserId)
+                .findFirst()
+                .map(Membership::getRole)
+                .orElseThrow(() -> new NotInClubException("Current User is not in this club."));
     }
 }
