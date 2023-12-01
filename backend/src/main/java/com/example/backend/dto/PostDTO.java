@@ -30,9 +30,22 @@ public class PostDTO {
 
     private long boardId;
 
-    private long clubId;
-
     private long memberId;
+
+    public PostDTO(String postTitle, String postContent) {
+        this();
+        this.postTitle = postTitle;
+        this.postContent = postContent;
+    }
+
+    public PostDTO(Post post) {
+        this(post.getPostTitle(), post.getPostContent());
+        this.postViewCount = post.getPostViewCount();
+        this.createdTime = post.getCreatedTime();
+        this.updatedTime = post.getUpdatedTime();
+        this.boardId = post.getBoard().getBoardId();
+        this.memberId = post.getMember().getMemberId();
+    }
 
     public Post DTOToEntity() {
         return Post.builder()
@@ -42,9 +55,6 @@ public class PostDTO {
                 .postViewCount(this.postViewCount)
                 .board(Board.builder()
                         .boardId(this.boardId)
-                        .build())
-                .club(Club.builder()
-                        .clubId(this.clubId)
                         .build())
                 .member(Member.builder()
                         .memberId(this.memberId)

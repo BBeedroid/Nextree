@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface BoardService {
     void register(Long clubId, BoardDTO boardDTO, Long currentUserId);
-    BoardDTO find(Long boardId);
-    List<BoardDTO> findByTitle(String boardTitle);
-    BoardDTO findByClubName(String clubName);
-    void modify(BoardDTO boardDTO);
-    void remove(Long boardId);
+    BoardDTO findBoard(Long boardId);
+    BoardDTO findByClubIdAndBoardTitle(Long clubId, String boardTitle);
+    List<BoardDTO> findByClubId(Long clubId);
+    BoardDTO modify(Long clubId, BoardDTO boardDTO, Long currentUserId);
+    void remove(Long boardId, Long currentUserId);
 }

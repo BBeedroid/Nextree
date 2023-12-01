@@ -24,6 +24,18 @@ public class BoardDTO {
 
     private long clubId;
 
+    public BoardDTO(String boardTitle) {
+        this();
+        this.boardTitle = boardTitle;
+    }
+
+    public BoardDTO(Board board) {
+        this(board.getBoardTitle());
+        this.createdTime = board.getCreatedTime();
+        this.updatedTime = board.getUpdatedTime();
+        this.clubId = board.getClub().getClubId();
+    }
+
     public Board DTOToEntity() {
         return Board.builder()
                 .boardId(this.boardId)
