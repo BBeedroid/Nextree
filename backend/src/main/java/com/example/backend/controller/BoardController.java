@@ -3,10 +3,7 @@ package com.example.backend.controller;
 import com.example.backend.dto.BoardDTO;
 import com.example.backend.dto.ResponseDTO;
 import com.example.backend.service.BoardService;
-import com.example.backend.util.BoardDuplicationException;
-import com.example.backend.util.NoPermissionToCreateBoard;
-import com.example.backend.util.NoSuchBoardException;
-import com.example.backend.util.NoSuchClubException;
+import com.example.backend.util.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -84,6 +83,51 @@ public class BoardController {
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);
         } catch (NoSuchClubException e) {
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateBoard(@RequestParam Long clubId,
+                                         @RequestBody BoardDTO boardDTO,
+                                         HttpSession session) {
+        ResponseDTO<BoardDTO> responseDTO = new ResponseDTO<>();
+        try {
+            Long currentUserId = (Long) session.getAttribute("loginUserId");
+            if (currentUserId == null) {
+                throw new AuthenticationException("User is not authenticated.");
+            }
+
+            boardService.modify(clubId, boardDTO, currentUserId);
+            responseDTO.setItem(boardDTO);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok(responseDTO);
+        } catch (NoSuchClubException | NoPermissionToModifyBoard | NoSuchBoardException | AuthenticationException e) {
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteBoard(@RequestParam Long boardId,
+                                         HttpSession session) {
+        ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
+        try {
+            Long currentUserId = (Long) session.getAttribute("loginUserId");
+            if (currentUserId == null) {
+                throw new AuthenticationException("User is not authenticated.");
+            }
+
+            boardService.remove(boardId, currentUserId);
+            Map<String, String> returnMap = new HashMap<>();
+            returnMap.put("message", "Successfully removed the board.");
+            responseDTO.setItem(returnMap);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (NoSuchBoardException | NoPermisiionToDeleteBoard | AuthenticationException e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);

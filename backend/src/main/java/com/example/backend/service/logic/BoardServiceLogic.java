@@ -67,13 +67,36 @@ public class BoardServiceLogic implements BoardService {
     }
 
     @Override
-    public void modify(BoardDTO boardDTO) {
+    @Transactional
+    public BoardDTO modify(Long clubId, BoardDTO boardDTO, Long currentUserId) {
+        clubStore.findById(clubId)
+                .orElseThrow(() -> new NoSuchClubException("No such club with id : " + clubId));
 
+        Role currentUserRole = getCurrentUserRoleInClub(clubId, currentUserId);
+        if (currentUserRole != Role.PRESIDENT) {
+            throw new NoPermissionToModifyBoard("Only the president can modify board.");
+        }
+
+        Board targetBoard = boardStore.findById(boardDTO.getBoardId())
+                .orElseThrow(() -> new NoSuchBoardException("No such board in the club."));
+
+        targetBoard.setBoardTitle(boardDTO.getBoardTitle());
+
+        return new BoardDTO(targetBoard);
     }
 
     @Override
-    public void remove(Long boardId) {
+    @Transactional
+    public void remove(Long boardId, Long currentUserId) {
+        Board board = boardStore.findById(boardId)
+                .orElseThrow(() -> new NoSuchBoardException("No such board in the club."));
 
+        Role currentUserRole = getCurrentUserRoleInClub(board.getClub().getClubId(), currentUserId);
+        if (currentUserRole != Role.PRESIDENT) {
+            throw new NoPermisiionToDeleteBoard("Only the president can delete board.");
+        }
+
+        boardStore.delete(board);
     }
 
     private Role getCurrentUserRoleInClub(Long clubId, Long currentUserId) {

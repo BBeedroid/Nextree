@@ -9,6 +9,6 @@ public interface BoardService {
     BoardDTO findBoard(Long boardId);
     BoardDTO findByClubIdAndBoardTitle(Long clubId, String boardTitle);
     List<BoardDTO> findByClubId(Long clubId);
-    void modify(BoardDTO boardDTO);
-    void remove(Long boardId);
+    BoardDTO modify(Long clubId, BoardDTO boardDTO, Long currentUserId);
+    void remove(Long boardId, Long currentUserId);
 }
