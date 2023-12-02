@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.dto.LoginDTO;
 import com.example.backend.dto.MemberDTO;
 import com.example.backend.entity.Member;
 import com.example.backend.util.InvalidEmailException;
@@ -12,5 +13,5 @@ public interface MemberService {
     List<MemberDTO> findByNickname(String memberNickname);
     MemberDTO modify(Long memberId, MemberDTO memberDTO) throws InvalidEmailException;
     void remove(Long memberId);
-    Member login(String memberEmail, String memberPassword);
+    Member login(LoginDTO loginDTO);
 }
