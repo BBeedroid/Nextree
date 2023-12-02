@@ -8,7 +8,7 @@
     "airbnb",
     "plugin:@typescript-eslint/recommended",
     "prettier",
-	"prettier/prettier",
+	  "prettier/prettier",
     "plugin:prettier/recommended"
   ],
   "parser": "@typescript-eslint/parser",
@@ -39,6 +39,20 @@
       "error",
       {
         "allowExpressions": true
+      }
+    ],
+    "react/function-component-definition":[
+      2, 
+      { "namedComponents": [
+        "arrow-function", 
+        "function-declaration"
+      ] }
+    ],
+    "prettier/prettier": [
+      "error",
+      {
+        "tabWidth": 4,
+        "endOfLine" : "auto"
       }
     ],
     "react-hooks/rules-of-hooks": "error",
