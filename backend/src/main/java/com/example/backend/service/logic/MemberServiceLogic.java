@@ -1,5 +1,6 @@
 package com.example.backend.service.logic;
 
+import com.example.backend.dto.LoginDTO;
 import com.example.backend.dto.MemberDTO;
 import com.example.backend.entity.Member;
 import com.example.backend.service.MemberService;
@@ -59,7 +60,6 @@ public class MemberServiceLogic implements MemberService {
 
         targetMember.setMemberNickname(memberDTO.getMemberNickname());
         targetMember.setMemberTel(memberDTO.getMemberTel());
-        targetMember.setMemberBirthDate(memberDTO.getMemberBirthDate());
         targetMember.setMemberZipcode(memberDTO.getMemberZipcode());
         targetMember.setMemberAddress(memberDTO.getMemberAddress());
         targetMember.setMemberDetailAddress(memberDTO.getMemberDetailAddress());
@@ -77,11 +77,11 @@ public class MemberServiceLogic implements MemberService {
     }
 
     @Override
-    public Member login(String memberEmail, String memberPassword) {
-        Member loginUser = Optional.ofNullable(memberStore.findByMemberEmail(memberEmail))
+    public Member login(LoginDTO loginDTO) {
+        Member loginUser = Optional.ofNullable(memberStore.findByMemberEmail(loginDTO.getMemberEmail()))
                 .orElseThrow(() -> new NoSuchEmailException("User Email or password is wrong."));
 
-        if (!loginUser.getMemberPassword().equals(memberPassword)) {
+        if (!loginUser.getMemberPassword().equals(loginDTO.getMemberPassword())) {
             throw new PasswordNotMatchException("User Email or password is wrong.");
         }
 
