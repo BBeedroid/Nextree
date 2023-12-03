@@ -28,11 +28,16 @@ public class MembershipDTO {
 
     private long clubId;
 
+    private String memberNickname;
+    private String clubName;
+
     public MembershipDTO(Membership membership) {
         this.role = membership.getRole().toString();
         this.memberId = membership.getMember().getMemberId();
         this.clubId = membership.getClub().getClubId();
         this.createdTime = membership.getCreatedTime();
+        this.memberNickname = membership.getMember().getMemberNickname();
+        this.clubName = membership.getClub().getClubName();
     }
 
     public Membership DTOToEntity() {
