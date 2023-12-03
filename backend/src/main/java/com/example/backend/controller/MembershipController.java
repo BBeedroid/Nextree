@@ -26,15 +26,20 @@ public class MembershipController {
 
     @PostMapping
     public ResponseEntity<?> joinClub(@RequestParam("clubId") Long clubId,
-                                      @RequestParam("memberId") Long memberId,
-                                      @RequestBody MembershipDTO membershipDTO) {
+                                      @RequestBody MembershipDTO membershipDTO,
+                                      HttpSession session) {
         ResponseDTO<MembershipDTO> responseDTO = new ResponseDTO<>();
         try {
-            membershipService.addMembership(clubId, memberId, membershipDTO);
+            Long currentUserId = (Long) session.getAttribute("loginUserId");
+            if (currentUserId == null) {
+                throw new AuthenticationException("User is not authenticated.");
+            }
+            
+            membershipService.addMembership(clubId, currentUserId, membershipDTO);
             responseDTO.setItem(membershipDTO);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);
-        } catch (NoSuchClubException | NoSuchMemberException | MemberDuplicationException e) {
+        } catch (NoSuchClubException | NoSuchMemberException | MemberDuplicationException | AuthenticationException e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);
@@ -73,14 +78,19 @@ public class MembershipController {
     }
 
     @GetMapping("/member")
-    public ResponseEntity<?> searchMembershipsInMember(@RequestParam("memberId") Long memberId) {
+    public ResponseEntity<?> searchMembershipsInMember(HttpSession session) {
         ResponseDTO<MembershipDTO> responseDTO = new ResponseDTO<>();
         try {
-            List<MembershipDTO> foundMemberships = membershipService.findAllMembershipsByMember(memberId);
+            Long currentUserId = (Long) session.getAttribute("loginUserId");
+            if (currentUserId == null) {
+                throw new AuthenticationException("User is not authenticated.");
+            }
+
+            List<MembershipDTO> foundMemberships = membershipService.findAllMembershipsByMember(currentUserId);
             responseDTO.setItems(foundMemberships);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);
-        } catch (NoSuchMemberException e) {
+        } catch (NoSuchMemberException | AuthenticationException e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);
