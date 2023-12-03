@@ -60,7 +60,6 @@ public class MemberServiceLogic implements MemberService {
 
         targetMember.setMemberNickname(memberDTO.getMemberNickname());
         targetMember.setMemberTel(memberDTO.getMemberTel());
-        targetMember.setMemberBirthDate(memberDTO.getMemberBirthDate());
         targetMember.setMemberZipcode(memberDTO.getMemberZipcode());
         targetMember.setMemberAddress(memberDTO.getMemberAddress());
         targetMember.setMemberDetailAddress(memberDTO.getMemberDetailAddress());
