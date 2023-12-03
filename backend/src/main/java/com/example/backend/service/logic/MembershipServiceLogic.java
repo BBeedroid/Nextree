@@ -77,9 +77,9 @@ public class MembershipServiceLogic implements MembershipService {
     }
 
     @Override
-    public List<MembershipDTO> findAllMembershipsByMember(Long memberId) {
-        Member member = memberStore.findById(memberId)
-                .orElseThrow(() -> new NoSuchMemberException("No such member with id : " + memberId));
+    public List<MembershipDTO> findAllMembershipsByMember(Long currentUserId) {
+        Member member = memberStore.findById(currentUserId)
+                .orElseThrow(() -> new NoSuchMemberException("No such member with id : " + currentUserId));
 
         return member.getMemberships().stream()
                 .map(membership -> {
