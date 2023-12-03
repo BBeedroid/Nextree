@@ -31,6 +31,7 @@ public class AuthenticationController {
 
             Map<String, String> returnMap = new HashMap<>();
             returnMap.put("message", "Login Succeed.");
+            returnMap.put("loginUserId", String.valueOf(member.getMemberId()));
             responseDTO.setItem(returnMap);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);
