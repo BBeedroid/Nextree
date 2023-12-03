@@ -68,17 +68,25 @@ public class MembershipServiceLogic implements MembershipService {
                 .orElseThrow(() -> new NoSuchClubException("No such club with id : " + clubId));
 
         return club.getMemberships().stream()
-                .map(membership -> new MembershipDTO(membership))
+                .map(membership -> {
+                    MembershipDTO foundMembership = new MembershipDTO(membership);
+                    foundMembership.setMemberNickname(membership.getMember().getMemberNickname());
+                    return foundMembership;
+                })
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<MembershipDTO> findAllMembershipsByMember(Long memberId) {
-        Member member = memberStore.findById(memberId)
-                .orElseThrow(() -> new NoSuchMemberException("No such member with id : " + memberId));
+    public List<MembershipDTO> findAllMembershipsByMember(Long currentUserId) {
+        Member member = memberStore.findById(currentUserId)
+                .orElseThrow(() -> new NoSuchMemberException("No such member with id : " + currentUserId));
 
         return member.getMemberships().stream()
-                .map(membership -> new MembershipDTO(membership))
+                .map(membership -> {
+                    MembershipDTO foundMembership = new MembershipDTO(membership);
+                    foundMembership.setClubName(membership.getClub().getClubName());
+                    return foundMembership;
+                })
                 .collect(Collectors.toList());
     }
 
