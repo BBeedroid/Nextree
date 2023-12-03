@@ -7,6 +7,8 @@ const GlobalStyled = createGlobalStyle`
         margin: 0;
         padding: 0;
         box-sizing: boarder-box;
+        width: 100%;
+        height: 100%;
     }
     body {
         background-color: #ffffff;
@@ -19,10 +21,19 @@ const GlobalStyled = createGlobalStyle`
         text-decoration: none;
         cursor: pointer;
     }
-    input, button {
+    input {
         background-color: transparent;
-        border: none;
+        border: 1px solid grey;
+        border-radius: 5px;
         outline: none;
+        font-size: 1rem;
+    }
+    button {
+        background-color: transparent;
+        outline: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
     }
     h1, h2, h3, h4, h5, h6 {
         font-family: 'Nanum Gothic', sans-serif;
@@ -33,7 +44,7 @@ const GlobalStyled = createGlobalStyle`
     img {
         display: block;
         width: 100%;
-        height: 100;
+        height: 100%;
     }
 `;
 

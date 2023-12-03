@@ -1,50 +1,62 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import { SPRING_API_URL } from "../../config";
 
-const Container = styled.div`
+const Box = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 500px;
-    height: 350px;
+`;
+
+const Container = styled.div`
+    padding: 10px 20px;
+    width: 350px;
+    height: 200px;
     border: 1px solid grey;
     border-radius: 5px;
 `;
 
-const InnerContainer = styled.div`
-    width: 450px;
-    height: 325px;
-`;
-
 const Input = styled.input`
-    width: 350px;
+    margin: 10px 0;
+    padding: 10px 0 10px 5px;
+    width: 100%;
     height: 35px;
-    font-size: 1rem;
     color: #505050;
-    background: transparent;
-    border: none;
-    outline: none;
 `;
 
 const Button = styled.button`
     width: 130px;
     height: 35px;
-    font-size: 1rem;
     color: #ffffff;
     background: #505050;
     border: 1px solid grey;
-    border-radius: 5px;
-    outline: none;
-    cursor: pointer;
+`;
+
+const LoginButtonDiv = styled.div`
+    float: left;
+    padding: 5px 0;
+    width: 150px;
+    height: 45px;
+`;
+
+const SignUpButtonDiv = styled.div`
+    display: inline-block;
+    padding: 5px 0;
+    width: 150px;
+    height: 45px;
 `;
 
 const Login: React.FC = (): JSX.Element => {
     const [memberEmail, setMemberEmail] = useState<string>("");
     const [memberPassword, setMemberPassword] = useState<string>("");
+    const navigate = useNavigate();
 
-    const handleLogin = async (): Promise<void> => {
+    const handleLogin = async (
+        event: React.FormEvent<HTMLFormElement>,
+    ): Promise<void> => {
+        event.preventDefault();
         try {
             const response = await axios.post(`${SPRING_API_URL}/auth`, {
                 memberEmail,
@@ -58,31 +70,43 @@ const Login: React.FC = (): JSX.Element => {
                 alert(errorMessage);
                 console.error("An error occurred:", error);
             } else {
-                // 그 외 네트워크 에러 등
                 console.error("An error occurred:", error);
-                alert("An unexpected error occurred");
+                alert("에러가 발생했습니다.");
             }
         }
     };
 
+    const handleSignUp = (): void => {
+        navigate("/signup");
+    };
+
     return (
-        <Container>
-            <InnerContainer>
-                <Input
-                    type="email"
-                    value={memberEmail}
-                    onChange={(e) => setMemberEmail(e.target.value)}
-                    placeholder="Email"
-                />
-                <Input
-                    type="password"
-                    value={memberPassword}
-                    onChange={(e) => setMemberPassword(e.target.value)}
-                    placeholder="Password"
-                />
-                <Button onClick={handleLogin}>Login</Button>
-            </InnerContainer>
-        </Container>
+        <Box>
+            <Container>
+                <form onSubmit={handleLogin}>
+                    <Input
+                        type="email"
+                        value={memberEmail}
+                        onChange={(e) => setMemberEmail(e.target.value)}
+                        placeholder="Email"
+                    />
+                    <Input
+                        type="password"
+                        value={memberPassword}
+                        onChange={(e) => setMemberPassword(e.target.value)}
+                        placeholder="Password"
+                    />
+                    <LoginButtonDiv>
+                        <Button type="submit">로그인</Button>
+                    </LoginButtonDiv>
+                    <SignUpButtonDiv>
+                        <Button type="button" onClick={handleSignUp}>
+                            회원가입
+                        </Button>
+                    </SignUpButtonDiv>
+                </form>
+            </Container>
+        </Box>
     );
 };
 
