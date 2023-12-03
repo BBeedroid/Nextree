@@ -26,8 +26,6 @@ public class MemberDTO {
 
     private String memberTel;
 
-    private String memberBirthDate;
-
     private String memberZipcode;
 
     private String memberAddress;
@@ -53,7 +51,6 @@ public class MemberDTO {
 
     public MemberDTO(Member member) {
         this(member.getMemberEmail(), member.getMemberNickname(), member.getMemberTel());
-        this.memberBirthDate = member.getMemberBirthDate();
         this.memberZipcode = member.getMemberZipcode();
         this.memberAddress = member.getMemberAddress();
         this.memberDetailAddress = member.getMemberDetailAddress();
@@ -74,7 +71,6 @@ public class MemberDTO {
                 .memberPassword(this.memberPassword)
                 .memberNickname(this.memberNickname)
                 .memberTel(this.memberTel)
-                .memberBirthDate(this.memberBirthDate)
                 .memberZipcode(this.memberZipcode)
                 .memberAddress(this.memberAddress)
                 .memberDetailAddress(this.memberDetailAddress)

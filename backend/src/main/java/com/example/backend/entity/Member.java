@@ -36,9 +36,6 @@ public class Member extends BaseTimeEntity {
     @Column(name = "MEMBER_TEL")
     private String memberTel;
 
-    @Column(name = "MEMBER_BIRTH_DATE")
-    private String memberBirthDate;
-
     @Column(name = "MEMBER_ZIPCODE")
     private String memberZipcode;
 
@@ -58,7 +55,6 @@ public class Member extends BaseTimeEntity {
                 .memberPassword(this.memberPassword)
                 .memberNickname(this.memberNickname)
                 .memberTel(this.memberTel)
-                .memberBirthDate(this.memberBirthDate)
                 .memberZipcode(this.memberZipcode)
                 .memberAddress(this.memberAddress)
                 .memberDetailAddress(this.memberDetailAddress)
