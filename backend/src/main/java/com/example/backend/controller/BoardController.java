@@ -2,41 +2,40 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.BoardDTO;
 import com.example.backend.dto.ResponseDTO;
+import com.example.backend.jwt.JwtTokenProvider;
 import com.example.backend.service.BoardService;
 import com.example.backend.util.*;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.AuthenticationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/board")
+@RequestMapping("/api/board")
 public class BoardController {
     private final BoardService boardService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping
-    public ResponseEntity<?> createBoard(@RequestParam Long clubId,
-                                      @RequestBody BoardDTO boardDTO,
-                                      HttpSession session) {
+    public ResponseEntity<?> createBoard(@RequestParam("clubId") Long clubId,
+                                         @RequestBody BoardDTO boardDTO,
+                                         HttpServletRequest request) {
         ResponseDTO<BoardDTO> responseDTO = new ResponseDTO<>();
         try {
-            Long currentUserId = (Long) session.getAttribute("loginUserId");
-            if (currentUserId == null) {
-                throw new AuthenticationException("User is not authenticated.");
-            }
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
 
             boardService.register(clubId, boardDTO, currentUserId);
             responseDTO.setItem(boardDTO);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok(responseDTO);
-        } catch (NoSuchClubException | BoardDuplicationException | NoPermissionToCreateBoard | AuthenticationException e) {
+        } catch (NoSuchClubException | BoardDuplicationException | NoPermissionToCreateBoard e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);
@@ -44,7 +43,7 @@ public class BoardController {
     }
 
     @GetMapping("/{boardId}")
-    public ResponseEntity<?> searchBoard(@PathVariable Long boardId) {
+    public ResponseEntity<?> searchBoard(@PathVariable("boardId") Long boardId) {
         ResponseDTO<BoardDTO> responseDTO = new ResponseDTO<>();
         try {
             BoardDTO boardDTO = boardService.findBoard(boardId);
@@ -59,8 +58,8 @@ public class BoardController {
     }
 
     @GetMapping
-    public ResponseEntity<?> searchBoardByTitle(@RequestParam Long clubId,
-                                                @RequestParam String boardTitle) {
+    public ResponseEntity<?> searchBoardByTitle(@RequestParam("clubId") Long clubId,
+                                                @RequestParam("boardTitle") String boardTitle) {
         ResponseDTO<BoardDTO> responseDTO = new ResponseDTO<>();
         try {
             BoardDTO boardDTO = boardService.findByClubIdAndBoardTitle(clubId, boardTitle);
@@ -75,7 +74,7 @@ public class BoardController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> searchBoardByClubId(@RequestParam Long clubId) {
+    public ResponseEntity<?> searchBoardByClubId(@RequestParam("clubId") Long clubId) {
         ResponseDTO<BoardDTO> responseDTO = new ResponseDTO<>();
         try {
             List<BoardDTO> foundBoards = boardService.findByClubId(clubId);
@@ -90,21 +89,19 @@ public class BoardController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateBoard(@RequestParam Long clubId,
+    public ResponseEntity<?> updateBoard(@RequestParam("clubId") Long clubId,
                                          @RequestBody BoardDTO boardDTO,
-                                         HttpSession session) {
+                                         HttpServletRequest request) {
         ResponseDTO<BoardDTO> responseDTO = new ResponseDTO<>();
         try {
-            Long currentUserId = (Long) session.getAttribute("loginUserId");
-            if (currentUserId == null) {
-                throw new AuthenticationException("User is not authenticated.");
-            }
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
 
             boardService.modify(clubId, boardDTO, currentUserId);
             responseDTO.setItem(boardDTO);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok(responseDTO);
-        } catch (NoSuchClubException | NoPermissionToModifyBoard | NoSuchBoardException | AuthenticationException e) {
+        } catch (NoSuchClubException | NoPermissionToModifyBoard | NoSuchBoardException e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);
@@ -112,14 +109,12 @@ public class BoardController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteBoard(@RequestParam Long boardId,
-                                         HttpSession session) {
+    public ResponseEntity<?> deleteBoard(@RequestParam("boardId") Long boardId,
+                                         HttpServletRequest request) {
         ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
         try {
-            Long currentUserId = (Long) session.getAttribute("loginUserId");
-            if (currentUserId == null) {
-                throw new AuthenticationException("User is not authenticated.");
-            }
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
 
             boardService.remove(boardId, currentUserId);
             Map<String, String> returnMap = new HashMap<>();
@@ -127,7 +122,7 @@ public class BoardController {
             responseDTO.setItem(returnMap);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);
-        } catch (NoSuchBoardException | NoPermisiionToDeleteBoard | AuthenticationException e) {
+        } catch (NoSuchBoardException | NoPermisiionToDeleteBoard e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);
