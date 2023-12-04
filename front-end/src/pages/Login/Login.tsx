@@ -1,52 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import axios from "axios";
 import { SPRING_API_URL } from "../../config";
-
-const Box = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
-const Container = styled.div`
-    padding: 10px 20px;
-    width: 350px;
-    height: 200px;
-    border: 1px solid grey;
-    border-radius: 5px;
-`;
-
-const Input = styled.input`
-    margin: 10px 0;
-    padding: 10px 0 10px 5px;
-    width: 100%;
-    height: 35px;
-    color: #505050;
-`;
-
-const Button = styled.button`
-    width: 130px;
-    height: 35px;
-    color: #ffffff;
-    background: #505050;
-    border: 1px solid grey;
-`;
-
-const LoginButtonDiv = styled.div`
-    float: left;
-    padding: 5px 0;
-    width: 150px;
-    height: 45px;
-`;
-
-const SignUpButtonDiv = styled.div`
-    display: inline-block;
-    padding: 5px 0;
-    width: 150px;
-    height: 45px;
-`;
+import {
+    Box,
+    Container,
+    Input,
+    Button,
+    RightButtonDiv,
+    LeftButtonDiv,
+} from "../../styles/theme";
 
 const Login: React.FC = (): JSX.Element => {
     const [memberEmail, setMemberEmail] = useState<string>("");
@@ -89,7 +52,7 @@ const Login: React.FC = (): JSX.Element => {
 
     return (
         <Box>
-            <Container>
+            <Container width="350px" height="250px">
                 <form onSubmit={handleLogin}>
                     <Input
                         type="email"
@@ -103,14 +66,14 @@ const Login: React.FC = (): JSX.Element => {
                         onChange={(e) => setMemberPassword(e.target.value)}
                         placeholder="Password"
                     />
-                    <LoginButtonDiv>
+                    <RightButtonDiv>
                         <Button type="submit">로그인</Button>
-                    </LoginButtonDiv>
-                    <SignUpButtonDiv>
+                    </RightButtonDiv>
+                    <LeftButtonDiv>
                         <Button type="button" onClick={handleSignUp}>
                             회원가입
                         </Button>
-                    </SignUpButtonDiv>
+                    </LeftButtonDiv>
                 </form>
             </Container>
         </Box>
