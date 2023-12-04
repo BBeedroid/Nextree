@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -62,6 +63,21 @@ public class ClubController {
         try {
             ClubDTO foundClubDTO = clubService.findClubByName(clubName);
             responseDTO.setItem(foundClubDTO);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok(responseDTO);
+        } catch (NoSuchClubException e) {
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> searchAllClubs() {
+        ResponseDTO<ClubDTO> responseDTO = new ResponseDTO<>();
+        try {
+            List<ClubDTO> clubs = clubService.findAllClubs();
+            responseDTO.setItems(clubs);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok(responseDTO);
         } catch (NoSuchClubException e) {
