@@ -9,9 +9,7 @@ import com.example.backend.service.ClubService;
 import com.example.backend.store.ClubStore;
 import com.example.backend.store.MemberStore;
 import com.example.backend.store.MembershipStore;
-import com.example.backend.util.ClubDuplicationException;
-import com.example.backend.util.NoSuchClubException;
-import com.example.backend.util.NoSuchMemberException;
+import com.example.backend.util.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,24 +58,45 @@ public class ClubServiceLogic implements ClubService {
 
     @Override
     @Transactional
-    public ClubDTO modify(Long clubId, ClubDTO clubDTO) {
+    public ClubDTO modify(Long clubId, ClubDTO clubDTO, Long currentUserId) {
         Optional.ofNullable(clubStore.findByClubName(clubDTO.getClubName()))
                 .ifPresent(club -> { throw new ClubDuplicationException("Club already exists with name : " + clubDTO.getClubName());});
         Club targetClub = clubStore.findById(clubId)
                 .orElseThrow(() -> new NoSuchClubException("No such club with id : " + clubId));
+        Role currentUserRole = getCurrentUserRoleInClub(clubId, currentUserId);
 
-        targetClub.setClubName(clubDTO.getClubName());
-        targetClub.setClubIntro(clubDTO.getClubIntro());
+        if (currentUserRole == Role.PRESIDENT) {
+            targetClub.setClubName(clubDTO.getClubName());
+            targetClub.setClubIntro(clubDTO.getClubIntro());
+        } else {
+            throw new NoAuthorityForModifyClub("Does not have an authority to modify the club.");
+        }
 
         return new ClubDTO(targetClub);
     }
 
     @Override
     @Transactional
-    public void remove(Long clubId) {
+    public void remove(Long clubId, Long currentUserId) {
+        Club club = clubStore.findById(clubId)
+                .orElseThrow(() -> new NoSuchClubException("No such club with id : " + clubId));
+        Role currentUserRole = getCurrentUserRoleInClub(clubId, currentUserId);
+
+        if (currentUserRole == Role.PRESIDENT) {
+            clubStore.delete(club);
+        } else {
+            throw new NoAuthorityForDeleteClub("Does not have an authority to delete the club.");
+        }
+    }
+
+    private Role getCurrentUserRoleInClub(Long clubId, Long currentUserId) {
         Club club = clubStore.findById(clubId)
                 .orElseThrow(() -> new NoSuchClubException("No such club with id : " + clubId));
 
-        clubStore.delete(club);
+        return club.getMemberships().stream()
+                .filter(membership -> membership.getMember().getMemberId() == currentUserId)
+                .findFirst()
+                .map(Membership::getRole)
+                .orElseThrow(() -> new NotInClubException("Current User is not in this club."));
     }
 }

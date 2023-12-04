@@ -2,44 +2,43 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.PostDTO;
 import com.example.backend.dto.ResponseDTO;
+import com.example.backend.jwt.JwtTokenProvider;
 import com.example.backend.service.PostService;
 import com.example.backend.util.NoAuthorityForDeletePost;
 import com.example.backend.util.NoAuthorityForModifyPost;
 import com.example.backend.util.NoSuchBoardException;
 import com.example.backend.util.NoSuchPostingException;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.AuthenticationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/post")
+@RequestMapping("/api/post")
 public class PostController {
     private final PostService postService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping
-    public ResponseEntity<?> createPost(@RequestParam Long boardId,
+    public ResponseEntity<?> createPost(@RequestParam("boardId") Long boardId,
                                         @RequestBody PostDTO postDTO,
-                                        HttpSession session) {
+                                        HttpServletRequest request) {
         ResponseDTO<PostDTO> responseDTO = new ResponseDTO<>();
         try {
-            Long currentUserId = (Long) session.getAttribute("loginUserId");
-            if (currentUserId == null) {
-                throw new AuthenticationException("User is not authenticated.");
-            }
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
 
             postService.register(boardId, postDTO, currentUserId);
             responseDTO.setItem(postDTO);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok(responseDTO);
-        } catch (NoSuchBoardException | AuthenticationException e) {
+        } catch (NoSuchBoardException e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);
@@ -47,7 +46,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<?> searchPost(@PathVariable Long postId) {
+    public ResponseEntity<?> searchPost(@PathVariable("postId") Long postId) {
         ResponseDTO<PostDTO> responseDTO = new ResponseDTO<>();
         try {
             PostDTO postDTO = postService.findPost(postId);
@@ -62,8 +61,8 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<?> searchByTitleInBoard(@RequestParam Long boardId,
-                                                  @RequestParam String postTitle) {
+    public ResponseEntity<?> searchByTitleInBoard(@RequestParam("boardId") Long boardId,
+                                                  @RequestParam("postTitle") String postTitle) {
         ResponseDTO<PostDTO> responseDTO = new ResponseDTO<>();
         try {
             List<PostDTO> foundPosts = postService.findByTitleInBoard(boardId, postTitle);
@@ -78,7 +77,7 @@ public class PostController {
     }
 
     @GetMapping("/list/{boardId}")
-    public ResponseEntity<?> searchByBoard(@PathVariable Long boardId) {
+    public ResponseEntity<?> searchByBoard(@PathVariable("boardId") Long boardId) {
         ResponseDTO<PostDTO> responseDTO = new ResponseDTO<>();
         try {
             List<PostDTO> foundPosts = postService.findByBoard(boardId);
@@ -93,8 +92,8 @@ public class PostController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> searchByClubAndMember(@RequestParam Long clubId,
-                                                   @RequestParam Long memberId) {
+    public ResponseEntity<?> searchByClubAndMember(@RequestParam("clubId") Long clubId,
+                                                   @RequestParam("memberId") Long memberId) {
         ResponseDTO<PostDTO> responseDTO = new ResponseDTO<>();
         try {
             List<PostDTO> foundPosts = postService.findByClubAndMember(clubId, memberId);
@@ -109,21 +108,19 @@ public class PostController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updatePost(@RequestParam Long postId,
+    public ResponseEntity<?> updatePost(@RequestParam("postId") Long postId,
                                         @RequestBody PostDTO postDTO,
-                                        HttpSession session) {
+                                        HttpServletRequest request) {
         ResponseDTO<PostDTO> responseDTO = new ResponseDTO<>();
         try {
-            Long currentUserId = (Long) session.getAttribute("loginUserId");
-            if (currentUserId == null) {
-                throw new AuthenticationException("User is not authenticated.");
-            }
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
 
             postService.modify(postId, postDTO, currentUserId);
             responseDTO.setItem(postDTO);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok(responseDTO);
-        } catch (NoSuchPostingException | NoAuthorityForModifyPost | AuthenticationException e) {
+        } catch (NoSuchPostingException | NoAuthorityForModifyPost e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);
@@ -131,14 +128,12 @@ public class PostController {
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deletePost(@RequestParam Long postId,
-                                        HttpSession session) {
+    public ResponseEntity<?> deletePost(@RequestParam("postId") Long postId,
+                                        HttpServletRequest request) {
         ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
         try {
-            Long currentUserId = (Long) session.getAttribute("loginUserId");
-            if (currentUserId == null) {
-                throw new AuthenticationException("User is not authenticated.");
-            }
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
 
             postService.remove(postId, currentUserId);
             Map<String, String> returnMap = new HashMap<>();
@@ -146,7 +141,7 @@ public class PostController {
             responseDTO.setItem(returnMap);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);
-        } catch (NoSuchPostingException | NoAuthorityForDeletePost | AuthenticationException e) {
+        } catch (NoSuchPostingException | NoAuthorityForDeletePost e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);

@@ -6,6 +6,6 @@ public interface ClubService {
     void register(Long memberId, ClubDTO clubDTO);
     ClubDTO findClubById(Long clubId);
     ClubDTO findClubByName(String clubName);
-    ClubDTO modify(Long clubId, ClubDTO clubDTO);
-    void remove(Long clubId);
+    ClubDTO modify(Long clubId, ClubDTO clubDTO, Long currentUserId);
+    void remove(Long clubId, Long currentUserId);
 }
