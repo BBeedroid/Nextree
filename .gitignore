@@ -58,4 +58,6 @@ front-end/node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-front-end/
+
+# jwt
+backend/src/main/java/com/example/backend/jwt/JwtTokenProvider.java

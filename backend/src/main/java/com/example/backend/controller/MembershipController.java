@@ -2,12 +2,13 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.MembershipDTO;
 import com.example.backend.dto.ResponseDTO;
+import com.example.backend.jwt.JwtTokenProvider;
 import com.example.backend.service.MembershipService;
 import com.example.backend.util.MemberDuplicationException;
 import com.example.backend.util.NoSuchClubException;
 import com.example.backend.util.NoSuchMemberException;
 import com.example.backend.util.NoSuchMembershipException;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,26 +21,25 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/membership")
+@RequestMapping("/api/membership")
 public class MembershipController {
     private final MembershipService membershipService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping
     public ResponseEntity<?> joinClub(@RequestParam("clubId") Long clubId,
                                       @RequestBody MembershipDTO membershipDTO,
-                                      HttpSession session) {
+                                      HttpServletRequest request) {
         ResponseDTO<MembershipDTO> responseDTO = new ResponseDTO<>();
         try {
-            Long currentUserId = (Long) session.getAttribute("loginUserId");
-            if (currentUserId == null) {
-                throw new AuthenticationException("User is not authenticated.");
-            }
-            
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
+
             membershipService.addMembership(clubId, currentUserId, membershipDTO);
             responseDTO.setItem(membershipDTO);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);
-        } catch (NoSuchClubException | NoSuchMemberException | MemberDuplicationException | AuthenticationException e) {
+        } catch (NoSuchClubException | NoSuchMemberException | MemberDuplicationException e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);
@@ -78,19 +78,17 @@ public class MembershipController {
     }
 
     @GetMapping("/member")
-    public ResponseEntity<?> searchMembershipsInMember(HttpSession session) {
+    public ResponseEntity<?> searchMembershipsInMember(HttpServletRequest request) {
         ResponseDTO<MembershipDTO> responseDTO = new ResponseDTO<>();
         try {
-            Long currentUserId = (Long) session.getAttribute("loginUserId");
-            if (currentUserId == null) {
-                throw new AuthenticationException("User is not authenticated.");
-            }
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
 
             List<MembershipDTO> foundMemberships = membershipService.findAllMembershipsByMember(currentUserId);
             responseDTO.setItems(foundMemberships);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);
-        } catch (NoSuchMemberException | AuthenticationException e) {
+        } catch (NoSuchMemberException e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);
@@ -116,13 +114,11 @@ public class MembershipController {
 
     @DeleteMapping
     public ResponseEntity<?> deleteMembership(@RequestParam("clubId") Long clubId,
-                                              HttpSession session) {
+                                              HttpServletRequest request) {
         ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
         try {
-            Long currentUserId = (Long) session.getAttribute("loginUserId");
-            if (currentUserId == null) {
-                throw new AuthenticationException("User is not authenticated.");
-            }
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
 
             membershipService.remove(clubId, currentUserId);
             Map<String, String> returnMap = new HashMap<>();
@@ -130,7 +126,7 @@ public class MembershipController {
             responseDTO.setItem(returnMap);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);
-        } catch (NoSuchClubException | NoSuchMemberException | NoSuchMembershipException | AuthenticationException e) {
+        } catch (NoSuchClubException | NoSuchMemberException | NoSuchMembershipException e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);

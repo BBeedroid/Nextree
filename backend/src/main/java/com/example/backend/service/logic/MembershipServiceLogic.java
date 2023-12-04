@@ -10,12 +10,10 @@ import com.example.backend.store.MemberStore;
 import com.example.backend.store.MembershipStore;
 import com.example.backend.store.ClubStore;
 import com.example.backend.util.*;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
