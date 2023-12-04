@@ -16,7 +16,12 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler)
             throws Exception {
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
+
         String token = jwtTokenProvider.resolveToken(request);
+        System.out.println("token : " + token);
         if (token != null && jwtTokenProvider.validationToken(token)) {
             return true;
         } else {
