@@ -62,7 +62,14 @@ const Login: React.FC = (): JSX.Element => {
                 memberEmail,
                 memberPassword,
             });
-            console.log("Login successful: ", response.data);
+            const { token, message } = response.data.item;
+            if (token) {
+                localStorage.setItem("token", token);
+                navigate("/my-club-list");
+            } else {
+                console.error("token not received");
+                alert(`"${message}"`);
+            }
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
                 const errorMessage =
