@@ -2,26 +2,30 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.MemberDTO;
 import com.example.backend.dto.ResponseDTO;
+import com.example.backend.jwt.JwtTokenProvider;
 import com.example.backend.service.MemberService;
 import com.example.backend.util.InvalidEmailException;
 import com.example.backend.util.MemberDuplicationException;
 import com.example.backend.util.NoSuchMemberException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.AuthenticationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/member")
+@RequestMapping("/api/member")
 public class MemberController {
     private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping
+    @PostMapping("/signup")
     public ResponseEntity<?> createMember(@RequestBody MemberDTO memberDTO) {
         ResponseDTO<MemberDTO> responseDTO = new ResponseDTO<>();
         try {
@@ -37,7 +41,7 @@ public class MemberController {
     }
 
     @GetMapping("/{memberEmail}")
-    public ResponseEntity<?> searchByMemberEmail(@PathVariable String memberEmail) {
+    public ResponseEntity<?> searchByMemberEmail(@PathVariable("memberEmail") String memberEmail) {
         ResponseDTO<MemberDTO> responseDTO = new ResponseDTO<>();
         try {
             MemberDTO foundMemberDTO = memberService.find(memberEmail);
@@ -67,10 +71,14 @@ public class MemberController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateMember(@RequestParam Long memberId, @RequestBody MemberDTO memberDTO) {
+    public ResponseEntity<?> updateMember(@RequestBody MemberDTO memberDTO,
+                                          HttpServletRequest request) {
         ResponseDTO<MemberDTO> responseDTO = new ResponseDTO<>();
         try {
-            MemberDTO updatedMemberDTO = memberService.modify(memberId, memberDTO);
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
+
+            MemberDTO updatedMemberDTO = memberService.modify(currentUserId, memberDTO);
             responseDTO.setItem(updatedMemberDTO);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok(responseDTO);
@@ -81,13 +89,16 @@ public class MemberController {
         }
     }
 
-    @DeleteMapping("/{memberId}")
-    public ResponseEntity<?> deleteMember(@PathVariable Long memberId) {
+    @DeleteMapping
+    public ResponseEntity<?> deleteMember(HttpServletRequest request) {
         ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
         try {
-            memberService.remove(memberId);
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
+
+            memberService.remove(currentUserId);
             Map<String, String> returnMap = new HashMap<>();
-            returnMap.put("message", "successfully removed member with id : " + memberId);
+            returnMap.put("message", "successfully removed member with id : " + currentUserId);
             responseDTO.setItem(returnMap);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);
@@ -97,6 +108,4 @@ public class MemberController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
-
-
 }

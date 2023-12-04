@@ -4,7 +4,6 @@ import com.example.backend.dto.LoginDTO;
 import com.example.backend.dto.MemberDTO;
 import com.example.backend.entity.Member;
 import com.example.backend.service.MemberService;
-import com.example.backend.service.MembershipService;
 import com.example.backend.store.MemberStore;
 import com.example.backend.util.*;
 import lombok.RequiredArgsConstructor;

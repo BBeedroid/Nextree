@@ -7,7 +7,6 @@ import com.example.backend.jwt.JwtTokenProvider;
 import com.example.backend.service.MemberService;
 import com.example.backend.util.NoSuchEmailException;
 import com.example.backend.util.PasswordNotMatchException;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,7 @@ public class AuthenticationController {
         ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
         try {
             Member member = memberService.login(loginDTO);
-            String token = jwtTokenProvider.create(member.getMemberEmail());
+            String token = jwtTokenProvider.create(member.getMemberEmail(), member.getMemberId());
 
             Map<String, String> returnMap = new HashMap<>();
             returnMap.put("message", "Login Succeed.");
