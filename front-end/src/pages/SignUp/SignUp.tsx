@@ -79,7 +79,7 @@ const SignUp: React.FC = (): JSX.Element => {
         event.preventDefault();
         try {
             const response = await axios.post(
-                `${SPRING_API_URL}/member`,
+                `${SPRING_API_URL}/api/member/signup`,
                 member,
             );
             console.log("Sign up successful: ", response.data);
