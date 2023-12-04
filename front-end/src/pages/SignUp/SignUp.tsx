@@ -1,52 +1,15 @@
 import React, { useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import axios from "axios";
 import { SPRING_API_URL } from "../../config";
-
-const Box = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
-const Container = styled.div`
-    padding: 10px 20px;
-    width: 500px;
-    height: 350px;
-    border: 1px solid grey;
-    border-radius: 5px;
-`;
-
-const Input = styled.input`
-    margin: 10px 0;
-    padding: 10px 0 10px 5px;
-    width: 100%;
-    height: 35px;
-    color: #505050;
-`;
-
-const Button = styled.button`
-    width: 130px;
-    height: 35px;
-    color: #ffffff;
-    background: #505050;
-    border: 1px solid grey;
-`;
-
-const SignUpButtonDiv = styled.div`
-    float: left;
-    padding: 5px 0;
-    width: 150px;
-    height: 45px;
-`;
-
-const CancelButtonDiv = styled.div`
-    display: inline-block;
-    padding: 5px 0;
-    width: 150px;
-    height: 45px;
-`;
+import {
+    Box,
+    Container,
+    Input,
+    Button,
+    RightButtonDiv,
+    LeftButtonDiv,
+} from "../../styles/theme";
 
 interface MemberDTO {
     memberEmail: string;
@@ -131,14 +94,14 @@ const SignUp: React.FC = (): JSX.Element => {
                         onChange={handleChange}
                         placeholder="전화번호"
                     />
-                    <SignUpButtonDiv>
+                    <RightButtonDiv>
                         <Button type="submit">회원가입</Button>
-                    </SignUpButtonDiv>
-                    <CancelButtonDiv>
+                    </RightButtonDiv>
+                    <LeftButtonDiv>
                         <Button type="button" onClick={handleCancel}>
                             취소
                         </Button>
-                    </CancelButtonDiv>
+                    </LeftButtonDiv>
                 </form>
             </Container>
         </Box>

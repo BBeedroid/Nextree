@@ -1,27 +1,15 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
 import axios from "axios";
 import { SPRING_API_URL } from "../../config";
-
-const Box = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
-const Container = styled.div`
-    padding: 10px 20px;
-    width: 500px;
-    height: 350px;
-    border: 1px solid grey;
-    border-radius: 5px;
-`;
-
-const Table = styled.table`
-    border-collapse: collapse;
-    min-width: 510px;
-    min-height: 360px;
-`;
+import {
+    Box,
+    Container,
+    Table,
+    StyledTd,
+    StyledTr,
+    Title,
+    Button,
+} from "../../styles/theme";
 
 interface MembershipDTO {
     role: string;
@@ -54,7 +42,7 @@ const fetchJoinedClubs = async (): Promise<MembershipDTO[]> => {
     }
 };
 
-const ClubList: React.FC = (): JSX.Element => {
+const MyClubList: React.FC = (): JSX.Element => {
     const [memberships, setMemberships] = useState<MembershipDTO[]>([]);
 
     useEffect(() => {
@@ -63,28 +51,28 @@ const ClubList: React.FC = (): JSX.Element => {
 
     return (
         <Box>
-            <Container>
+            <Container height="500px">
+                <Title>내 클럽 목록</Title>
                 <Table>
-                    <thead>
-                        <tr>
-                            <th>클럽 이름</th>
-                            <th>역할</th>
-                            <th>가입 시간</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {memberships.map((membership) => (
-                            <tr key={membership.memberId}>
-                                <td>{membership.clubName}</td>
-                                <td>{membership.role}</td>
-                                <td>{membership.createTime}</td>
-                            </tr>
-                        ))}
-                    </tbody>
+                    <StyledTr>
+                        <StyledTd fontSize="1.3rem" fontWeight="bold">
+                            클럽 이름
+                        </StyledTd>
+                        <StyledTd fontSize="1.3rem" fontWeight="bold">
+                            역할
+                        </StyledTd>
+                    </StyledTr>
+                    {memberships.map((membership) => (
+                        <StyledTr key={membership.memberId}>
+                            <StyledTd>{membership.clubName}</StyledTd>
+                            <StyledTd>{membership.role}</StyledTd>
+                        </StyledTr>
+                    ))}
                 </Table>
+                <Button>전체 클럽 목록</Button>
             </Container>
         </Box>
     );
 };
 
-export default ClubList;
+export default MyClubList;
