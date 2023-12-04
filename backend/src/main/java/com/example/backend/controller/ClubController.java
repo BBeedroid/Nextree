@@ -2,9 +2,11 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.ClubDTO;
 import com.example.backend.dto.ResponseDTO;
+import com.example.backend.jwt.JwtTokenProvider;
 import com.example.backend.service.ClubService;
 import com.example.backend.util.ClubDuplicationException;
 import com.example.backend.util.NoSuchClubException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,16 +17,20 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/club")
+@RequestMapping("/api/club")
 public class ClubController {
     private final ClubService clubService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping
-    public ResponseEntity<?> createClub(@RequestParam("memberId") Long memberId,
-                                        @RequestBody ClubDTO clubDTO) {
+    public ResponseEntity<?> createClub(@RequestBody ClubDTO clubDTO,
+                                        HttpServletRequest request) {
         ResponseDTO<ClubDTO> responseDTO = new ResponseDTO<>();
         try {
-            clubService.register(memberId, clubDTO);
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
+
+            clubService.register(currentUserId, clubDTO);
             responseDTO.setItem(clubDTO);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok(responseDTO);
@@ -36,7 +42,7 @@ public class ClubController {
     }
 
     @GetMapping("/{clubId}")
-    public ResponseEntity<?> searchByClubId(@PathVariable Long clubId) {
+    public ResponseEntity<?> searchByClubId(@PathVariable("clubId") Long clubId) {
         ResponseDTO<ClubDTO> responseDTO = new ResponseDTO<>();
         try {
             ClubDTO foundClubDTO = clubService.findClubById(clubId);
@@ -67,10 +73,14 @@ public class ClubController {
 
     @PutMapping
     public ResponseEntity<?> updateClub(@RequestParam("clubId") Long clubId,
-                                        @RequestBody ClubDTO clubDTO) {
+                                        @RequestBody ClubDTO clubDTO,
+                                        HttpServletRequest request) {
         ResponseDTO<ClubDTO> responseDTO = new ResponseDTO<>();
         try {
-            ClubDTO updatedClubDTO = clubService.modify(clubId, clubDTO);
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
+
+            ClubDTO updatedClubDTO = clubService.modify(clubId, clubDTO, currentUserId);
             responseDTO.setItem(updatedClubDTO);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok(responseDTO);
@@ -82,10 +92,14 @@ public class ClubController {
     }
 
     @DeleteMapping("/{clubId}")
-    public ResponseEntity<?> deleteClub(@PathVariable Long clubId) {
+    public ResponseEntity<?> deleteClub(@PathVariable("clubId") Long clubId,
+                                        HttpServletRequest request) {
         ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
         try {
-            clubService.remove(clubId);
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
+
+            clubService.remove(clubId, currentUserId);
             Map<String, String> returnMap = new HashMap<>();
             returnMap.put("message", "successfully removed club with id : " + clubId);
             responseDTO.setItem(returnMap);
