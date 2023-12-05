@@ -46,7 +46,7 @@ const SignUp = (): ReactElement => {
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
                 const errorMessage =
-                    error.response.data.message || "Sign up failed";
+                    error.response.data.errorMessage || "Sign up failed";
                 alert(errorMessage);
                 console.error("An error occurred: ", error);
             } else {

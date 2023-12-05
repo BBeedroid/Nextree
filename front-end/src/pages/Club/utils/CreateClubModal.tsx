@@ -25,7 +25,6 @@ const CreateClubModal = ({
     };
 
     const [club, setClub] = useState<ClubDTO>(initialClubState);
-    const [error, setError] = useState<string>("");
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -51,10 +50,10 @@ const CreateClubModal = ({
             onClubCreate();
             onClose();
         } catch (catchError) {
-            setError("클럽 생성 중에 에러가 발생했습니다.");
             if (axios.isAxiosError(catchError) && catchError.response) {
                 const errorMessage =
-                    catchError.response.data.message || "Create club failed";
+                    catchError.response.data.errorMessage ||
+                    "Create club failed";
                 alert(errorMessage);
                 console.error("An error occurred: ", catchError);
             } else {
@@ -90,7 +89,6 @@ const CreateClubModal = ({
             <RightButtonDiv>
                 <Button onClick={onClose}>취소</Button>
             </RightButtonDiv>
-            {error && <p>{error}</p>}
         </Modal>
     );
 };

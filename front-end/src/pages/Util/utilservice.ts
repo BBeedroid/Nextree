@@ -6,7 +6,6 @@ export const toggleModal = (
     setModalState: React.Dispatch<React.SetStateAction<boolean>>,
 ): (() => void) => {
     return () => {
-        console.log("modal toggling");
         setModalState((prevState) => !prevState);
     };
 };
