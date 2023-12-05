@@ -48,10 +48,13 @@ public class MembershipController {
 
     @GetMapping
     public ResponseEntity<?> searchMembership(@RequestParam("clubId") Long clubId,
-                                              @RequestParam("memberId") Long memberId) {
+                                              HttpServletRequest request) {
         ResponseDTO<MembershipDTO> responseDTO = new ResponseDTO<>();
         try {
-            MembershipDTO foundMembership = membershipService.findMembership(clubId, memberId);
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
+
+            MembershipDTO foundMembership = membershipService.findMembership(clubId, currentUserId);
             responseDTO.setItem(foundMembership);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok().body(responseDTO);
