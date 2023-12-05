@@ -11,11 +11,10 @@ import {
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
 
-interface MembershipDTO {
-    role: string;
-    createTime: string;
-    memberId: number;
+interface ClubDTO {
+    clubId: number;
     clubName: string;
+    clubIntro: string;
 }
 
 interface ResponseDTO<T> {
@@ -24,10 +23,10 @@ interface ResponseDTO<T> {
     statusCode: number;
 }
 
-const fetchJoinedClubs = async (): Promise<MembershipDTO[]> => {
+const fetchAllClubs = async (): Promise<ClubDTO[]> => {
     try {
-        const response = await axios.get<ResponseDTO<MembershipDTO>>(
-            `${SPRING_API_URL}/api/membership/member`,
+        const response = await axios.get<ResponseDTO<ClubDTO>>(
+            `${SPRING_API_URL}/api/club/list`,
             {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -37,42 +36,42 @@ const fetchJoinedClubs = async (): Promise<MembershipDTO[]> => {
         console.log(response.data.items);
         return response.data.items;
     } catch (error) {
-        console.error("멤버십 목록을 불러오는 데 실패했습니다.", error);
+        console.error("클럽 목록을 불러오는 데 실패했습니다.", error);
         throw error;
     }
 };
 
-const MyClubList = (): ReactElement => {
-    const [memberships, setMemberships] = useState<MembershipDTO[]>([]);
+const AllClubList = (): ReactElement => {
+    const [clubs, setClubs] = useState<ClubDTO[]>([]);
 
     useEffect(() => {
-        fetchJoinedClubs().then(setMemberships).catch(console.error);
+        fetchAllClubs().then(setClubs).catch(console.error);
     }, []);
 
     return (
         <Box>
             <Container height="500px">
-                <Title>내 클럽 목록</Title>
+                <Title>클럽 목록</Title>
                 <Table>
                     <StyledTr>
                         <StyledTd fontSize="1.3rem" fontWeight="bold">
                             클럽 이름
                         </StyledTd>
                         <StyledTd fontSize="1.3rem" fontWeight="bold">
-                            역할
+                            클럽 소개
                         </StyledTd>
                     </StyledTr>
-                    {memberships.map((membership) => (
-                        <StyledTr key={membership.memberId}>
-                            <StyledTd>{membership.clubName}</StyledTd>
-                            <StyledTd>{membership.role}</StyledTd>
+                    {clubs.map((club) => (
+                        <StyledTr key={club.clubId}>
+                            <StyledTd>{club.clubName}</StyledTd>
+                            <StyledTd>{club.clubIntro}</StyledTd>
                         </StyledTr>
                     ))}
                 </Table>
-                <NavigateButton path="/all-club-list" label="전체 클럽 목록" />
+                <NavigateButton path="/" label="내 클럽 목록" />
             </Container>
         </Box>
     );
 };
 
-export default MyClubList;
+export default AllClubList;

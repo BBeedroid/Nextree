@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { SPRING_API_URL } from "../../config";
@@ -10,16 +10,60 @@ import {
     RightButtonDiv,
     LeftButtonDiv,
 } from "../../styles/theme";
+import NavigateButton from "../Util/NavigateButton";
 
-const Login: React.FC = (): JSX.Element => {
+interface LoginProps {
+    handleLogin: (memberEmail: string, memberPassword: string) => Promise<void>;
+}
+
+const LoginComponent = ({ handleLogin }: LoginProps): ReactElement => {
     const [memberEmail, setMemberEmail] = useState<string>("");
     const [memberPassword, setMemberPassword] = useState<string>("");
-    const navigate = useNavigate();
 
-    const handleLogin = async (
+    const submitLogin = async (
         event: React.FormEvent<HTMLFormElement>,
     ): Promise<void> => {
         event.preventDefault();
+        await handleLogin(memberEmail, memberPassword);
+    };
+
+    return (
+        <Box>
+            <Container width="350px" height="250px">
+                <form onSubmit={submitLogin}>
+                    <Input
+                        type="email"
+                        value={memberEmail}
+                        onChange={(e) => setMemberEmail(e.target.value)}
+                        placeholder="Email"
+                    />
+                    <Input
+                        type="password"
+                        value={memberPassword}
+                        onChange={(e) => setMemberPassword(e.target.value)}
+                        placeholder="Password"
+                    />
+                    <RightButtonDiv>
+                        <Button type="submit">로그인</Button>
+                    </RightButtonDiv>
+                    <LeftButtonDiv>
+                        <NavigateButton path="/signup" label="회원 가입" />
+                    </LeftButtonDiv>
+                </form>
+            </Container>
+        </Box>
+    );
+};
+
+const loginHandler = (
+    navigate: ReturnType<typeof useNavigate>,
+): {
+    handleLogin: (memberEmail: string, memberPassword: string) => Promise<void>;
+} => {
+    const handleLogin = async (
+        memberEmail: string,
+        memberPassword: string,
+    ): Promise<void> => {
         try {
             const response = await axios.post(`${SPRING_API_URL}/auth`, {
                 memberEmail,
@@ -46,38 +90,14 @@ const Login: React.FC = (): JSX.Element => {
         }
     };
 
-    const handleSignUp = (): void => {
-        navigate("/signup");
-    };
+    return { handleLogin };
+};
 
-    return (
-        <Box>
-            <Container width="350px" height="250px">
-                <form onSubmit={handleLogin}>
-                    <Input
-                        type="email"
-                        value={memberEmail}
-                        onChange={(e) => setMemberEmail(e.target.value)}
-                        placeholder="Email"
-                    />
-                    <Input
-                        type="password"
-                        value={memberPassword}
-                        onChange={(e) => setMemberPassword(e.target.value)}
-                        placeholder="Password"
-                    />
-                    <RightButtonDiv>
-                        <Button type="submit">로그인</Button>
-                    </RightButtonDiv>
-                    <LeftButtonDiv>
-                        <Button type="button" onClick={handleSignUp}>
-                            회원가입
-                        </Button>
-                    </LeftButtonDiv>
-                </form>
-            </Container>
-        </Box>
-    );
+const Login = (): ReactElement => {
+    const navigate = useNavigate();
+    const { handleLogin } = loginHandler(navigate);
+
+    return <LoginComponent handleLogin={handleLogin} />;
 };
 
 export default Login;
