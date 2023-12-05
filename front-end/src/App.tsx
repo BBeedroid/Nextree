@@ -6,6 +6,7 @@ import MyClubList from "./pages/Club/MyClubList";
 import AllClubList from "./pages/Club/AllClubList";
 import AllBoardList from "./pages/Board/AllBoardList";
 import Board from "./pages/Board/Board";
+import Post from "./pages/Post/Post";
 
 function App(): JSX.Element {
     return (
@@ -16,6 +17,10 @@ function App(): JSX.Element {
             <Route path="/all-club-list" element={<AllClubList />} />
             <Route path="/club/:clubId" element={<AllBoardList />} />
             <Route path="/club/:clubId/board/:boardId" element={<Board />} />
+            <Route
+                path="/club/:clubId/board/:boardId/post/:postId"
+                element={<Post />}
+            />
         </Routes>
     );
 }

@@ -2,6 +2,7 @@ import React, { ReactElement, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { PostDTO } from "../Util/dtoTypes";
 import { fetchPostsByBoard } from "./utils/boardservice";
+import { dateFormat } from "../Util/utilservice";
 import {
     Box,
     Container,
@@ -27,7 +28,7 @@ const Board = (): ReactElement => {
     }, [boardId]);
 
     const handlePostClick = (postId: number): void => {
-        navigate(`/post/${postId}`);
+        navigate(`/club/${clubId}/board/${boardId}/post/${postId}`);
     };
 
     const clubIdNum = clubId ? parseInt(clubId, 10) : null;
@@ -61,11 +62,19 @@ const Board = (): ReactElement => {
                                         }
                                     }}
                                 >
-                                    {post.postTitle}
+                                    {post ? post.postTitle : ""}
                                 </PointerSpan>
-                                <StyledTd>{post.memberNickname}</StyledTd>
-                                <StyledTd>{post.createdTime}</StyledTd>
-                                <StyledTd>{post.postViewCount}</StyledTd>
+                                <StyledTd>
+                                    {post ? post.memberNickname : ""}
+                                </StyledTd>
+                                <StyledTd>
+                                    {post && post.createdTime
+                                        ? dateFormat(post.createdTime)
+                                        : ""}
+                                </StyledTd>
+                                <StyledTd>
+                                    {post ? post.postViewCount : ""}
+                                </StyledTd>
                             </StyledTd>
                         </StyledTr>
                     ))}
