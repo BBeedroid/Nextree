@@ -47,6 +47,7 @@ public class Post extends BaseTimeEntity {
                 .updatedTime(this.getUpdatedTime())
                 .boardId(this.board.getBoardId())
                 .memberId(this.member.getMemberId())
+                .memberNickname(this.member.getMemberNickname())
                 .build();
     }
 }

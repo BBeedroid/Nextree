@@ -32,6 +32,8 @@ public class PostDTO {
 
     private long memberId;
 
+    private String memberNickname;
+
     public PostDTO(String postTitle, String postContent) {
         this();
         this.postTitle = postTitle;
@@ -45,6 +47,7 @@ public class PostDTO {
         this.updatedTime = post.getUpdatedTime();
         this.boardId = post.getBoard().getBoardId();
         this.memberId = post.getMember().getMemberId();
+        this.memberNickname = post.getMember().getMemberNickname();
     }
 
     public Post DTOToEntity() {
