@@ -53,10 +53,10 @@ const CreateClubModal = ({
         } catch (catchError) {
             setError("클럽 생성 중에 에러가 발생했습니다.");
             if (axios.isAxiosError(catchError) && catchError.response) {
+                const errorMessage =
+                    catchError.response.data.message || "Create club failed";
+                alert(errorMessage);
                 console.error("An error occurred: ", catchError);
-                throw new Error(
-                    catchError.response.data.message || "Create club failed",
-                );
             } else {
                 console.error("An error occurred:", catchError);
                 throw new Error("에러가 발생했습니다.");

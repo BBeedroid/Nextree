@@ -8,14 +8,21 @@ import {
     StyledTr,
     Title,
     PointerSpan,
+    Button,
+    RightButtonDiv,
+    LeftButtonDiv,
+    Overlay,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
 import { MembershipDTO } from "../Util/dtoTypes";
 import { fetchJoinedClubs } from "./utils/clubservice";
+import { toggleModal } from "../Util/utilservice";
+import CreateClubModal from "./utils/CreateClubModal";
 
 const MyClubList = (): ReactElement => {
     const [memberships, setMemberships] = useState<MembershipDTO[]>([]);
     const navigate = useNavigate();
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
         fetchJoinedClubs().then(setMemberships).catch(console.error);
@@ -23,6 +30,10 @@ const MyClubList = (): ReactElement => {
 
     const handleClubClick = (clubId: number): void => {
         navigate(`/club/${clubId}`);
+    };
+
+    const refreshClubList = (): void => {
+        fetchJoinedClubs().then(setMemberships).catch(console.error);
     };
 
     return (
@@ -55,7 +66,27 @@ const MyClubList = (): ReactElement => {
                         </StyledTr>
                     ))}
                 </Table>
-                <NavigateButton path="/all-club-list" label="전체 클럽 목록" />
+                <LeftButtonDiv>
+                    <NavigateButton
+                        path="/all-club-list"
+                        label="전체 클럽 목록"
+                    />
+                </LeftButtonDiv>
+                <RightButtonDiv>
+                    <Button onClick={toggleModal(setIsModalOpen)}>
+                        클럽 생성
+                    </Button>
+                </RightButtonDiv>
+
+                {isModalOpen && (
+                    <>
+                        <Overlay onClick={toggleModal(setIsModalOpen)} />
+                        <CreateClubModal
+                            onClose={toggleModal(setIsModalOpen)}
+                            onClubCreate={refreshClubList}
+                        />
+                    </>
+                )}
             </Container>
         </Box>
     );

@@ -196,3 +196,13 @@ export const Textarea = styled.textarea<TextareaProps>`
     width: ${(props) => props.width || "300px"};
     height: ${(props) => props.height || "250px"};
 `;
+
+export const Overlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+`;
