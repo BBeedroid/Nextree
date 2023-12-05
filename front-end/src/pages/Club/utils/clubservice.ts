@@ -37,3 +37,27 @@ export const fetchAllClubs = async (): Promise<ClubDTO[]> => {
         throw error;
     }
 };
+
+export const fetchMembership = async (
+    clubId: number,
+): Promise<MembershipDTO | undefined> => {
+    try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get<ResponseDTO<MembershipDTO>>(
+            `${SPRING_API_URL}/api/membership`,
+            {
+                params: {
+                    clubId,
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            },
+        );
+        return response.data.item;
+    } catch (error) {
+        console.error("멤버십 조회에 실패했습니다.", error);
+        return undefined;
+    }
+};
