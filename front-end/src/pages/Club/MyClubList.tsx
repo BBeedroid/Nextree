@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ReactElement } from "react";
 import axios from "axios";
 import { SPRING_API_URL } from "../../config";
 import {
@@ -8,8 +8,8 @@ import {
     StyledTd,
     StyledTr,
     Title,
-    Button,
 } from "../../styles/theme";
+import NavigateButton from "../Util/NavigateButton";
 
 interface MembershipDTO {
     role: string;
@@ -34,15 +34,15 @@ const fetchJoinedClubs = async (): Promise<MembershipDTO[]> => {
                 },
             },
         );
-        return response.data.items;
         console.log(response.data.items);
+        return response.data.items;
     } catch (error) {
         console.error("멤버십 목록을 불러오는 데 실패했습니다.", error);
         throw error;
     }
 };
 
-const MyClubList: React.FC = (): JSX.Element => {
+const MyClubList = (): ReactElement => {
     const [memberships, setMemberships] = useState<MembershipDTO[]>([]);
 
     useEffect(() => {
@@ -69,7 +69,7 @@ const MyClubList: React.FC = (): JSX.Element => {
                         </StyledTr>
                     ))}
                 </Table>
-                <Button>전체 클럽 목록</Button>
+                <NavigateButton path="/all-club-list" label="전체 클럽 목록" />
             </Container>
         </Box>
     );
