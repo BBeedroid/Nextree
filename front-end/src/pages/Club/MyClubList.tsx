@@ -1,6 +1,4 @@
 import React, { useState, useEffect, ReactElement } from "react";
-import axios from "axios";
-import { SPRING_API_URL } from "../../config";
 import {
     Box,
     Container,
@@ -10,37 +8,8 @@ import {
     Title,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
-
-interface MembershipDTO {
-    role: string;
-    createTime: string;
-    memberId: number;
-    clubName: string;
-}
-
-interface ResponseDTO<T> {
-    items: T[];
-    errorMessage: string;
-    statusCode: number;
-}
-
-const fetchJoinedClubs = async (): Promise<MembershipDTO[]> => {
-    try {
-        const response = await axios.get<ResponseDTO<MembershipDTO>>(
-            `${SPRING_API_URL}/api/membership/member`,
-            {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            },
-        );
-        console.log(response.data.items);
-        return response.data.items;
-    } catch (error) {
-        console.error("멤버십 목록을 불러오는 데 실패했습니다.", error);
-        throw error;
-    }
-};
+import { MembershipDTO } from "../Util/dtoTypes";
+import { fetchJoinedClubs } from "./clubService/clubservice";
 
 const MyClubList = (): ReactElement => {
     const [memberships, setMemberships] = useState<MembershipDTO[]>([]);

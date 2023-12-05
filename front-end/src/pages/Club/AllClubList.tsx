@@ -1,6 +1,4 @@
 import React, { useState, useEffect, ReactElement } from "react";
-import axios from "axios";
-import { SPRING_API_URL } from "../../config";
 import {
     Box,
     Container,
@@ -10,36 +8,8 @@ import {
     Title,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
-
-interface ClubDTO {
-    clubId: number;
-    clubName: string;
-    clubIntro: string;
-}
-
-interface ResponseDTO<T> {
-    items: T[];
-    errorMessage: string;
-    statusCode: number;
-}
-
-const fetchAllClubs = async (): Promise<ClubDTO[]> => {
-    try {
-        const response = await axios.get<ResponseDTO<ClubDTO>>(
-            `${SPRING_API_URL}/api/club/list`,
-            {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            },
-        );
-        console.log(response.data.items);
-        return response.data.items;
-    } catch (error) {
-        console.error("클럽 목록을 불러오는 데 실패했습니다.", error);
-        throw error;
-    }
-};
+import { ClubDTO } from "../Util/dtoTypes";
+import { fetchAllClubs } from "./clubService/clubservice";
 
 const AllClubList = (): ReactElement => {
     const [clubs, setClubs] = useState<ClubDTO[]>([]);
@@ -68,7 +38,7 @@ const AllClubList = (): ReactElement => {
                         </StyledTr>
                     ))}
                 </Table>
-                <NavigateButton path="/" label="내 클럽 목록" />
+                <NavigateButton path="/my-club-list" label="내 클럽 목록" />
             </Container>
         </Box>
     );

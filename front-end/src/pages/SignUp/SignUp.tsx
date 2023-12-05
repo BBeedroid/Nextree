@@ -1,7 +1,8 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { ReactElement, useState, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { SPRING_API_URL } from "../../config";
+import { MemberDTO } from "../Util/dtoTypes";
 import {
     Box,
     Container,
@@ -10,15 +11,9 @@ import {
     RightButtonDiv,
     LeftButtonDiv,
 } from "../../styles/theme";
+import NavigateButton from "../Util/NavigateButton";
 
-interface MemberDTO {
-    memberEmail: string;
-    memberPassword: string;
-    memberNickname: string;
-    memberTel: string;
-}
-
-const SignUp: React.FC = (): JSX.Element => {
+const SignUp = (): ReactElement => {
     const initialMemberState: MemberDTO = {
         memberEmail: "",
         memberPassword: "",
@@ -61,10 +56,6 @@ const SignUp: React.FC = (): JSX.Element => {
         }
     };
 
-    const handleCancel = (): void => {
-        navigate(-1);
-    };
-
     return (
         <Box>
             <Container>
@@ -98,9 +89,7 @@ const SignUp: React.FC = (): JSX.Element => {
                         <Button type="submit">회원가입</Button>
                     </RightButtonDiv>
                     <LeftButtonDiv>
-                        <Button type="button" onClick={handleCancel}>
-                            취소
-                        </Button>
+                        <NavigateButton path="/" label="취소" />
                     </LeftButtonDiv>
                 </form>
             </Container>
