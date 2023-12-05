@@ -26,6 +26,10 @@ const AllBoardList = (): ReactElement => {
         }
     }, [clubId]);
 
+    const handleClubClick = (boardId: number): void => {
+        navigate(`/club/${clubId}/board/${boardId}`);
+    };
+
     return (
         <Box>
             <Container height="500px">
@@ -40,9 +44,11 @@ const AllBoardList = (): ReactElement => {
                         <StyledTr key={board.boardId}>
                             <StyledTd fontSize="1.1rem">
                                 <PointerSpan
-                                    onClick={() =>
-                                        navigate(`/board/{board.boardId}`)
-                                    }
+                                    onClick={() => {
+                                        if (board.boardId !== undefined) {
+                                            handleClubClick(board.boardId);
+                                        }
+                                    }}
                                 >
                                     {board.boardTitle}
                                 </PointerSpan>

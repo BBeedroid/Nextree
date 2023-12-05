@@ -61,4 +61,5 @@ export interface PostDTO {
     updatedTime?: string;
     boardId?: number;
     memberId?: number;
+    memberNickname?: string;
 }
