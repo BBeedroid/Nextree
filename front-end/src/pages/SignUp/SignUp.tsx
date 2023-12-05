@@ -85,12 +85,12 @@ const SignUp = (): ReactElement => {
                         onChange={handleChange}
                         placeholder="전화번호"
                     />
-                    <RightButtonDiv>
-                        <Button type="submit">회원가입</Button>
-                    </RightButtonDiv>
                     <LeftButtonDiv>
-                        <NavigateButton path="/" label="취소" />
+                        <Button type="submit">회원가입</Button>
                     </LeftButtonDiv>
+                    <RightButtonDiv>
+                        <NavigateButton path="/" label="취소" />
+                    </RightButtonDiv>
                 </form>
             </Container>
         </Box>
