@@ -1,4 +1,5 @@
 import React, { useState, useEffect, ReactElement } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     Box,
     Container,
@@ -6,17 +7,28 @@ import {
     StyledTd,
     StyledTr,
     Title,
+    PointerSpan,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
 import { ClubDTO } from "../Util/dtoTypes";
-import { fetchAllClubs } from "./clubService/clubservice";
+import { fetchAllClubs, fetchMembership } from "./utils/clubservice";
 
 const AllClubList = (): ReactElement => {
     const [clubs, setClubs] = useState<ClubDTO[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchAllClubs().then(setClubs).catch(console.error);
     }, []);
+
+    const handleClubClick = async (clubId: number): Promise<void> => {
+        const membership = await fetchMembership(clubId);
+        if (!membership) {
+            alert("가입하시겠습니까?");
+        } else {
+            navigate(`/club/${clubId}`);
+        }
+    };
 
     return (
         <Box>
@@ -33,7 +45,17 @@ const AllClubList = (): ReactElement => {
                     </StyledTr>
                     {clubs.map((club) => (
                         <StyledTr key={club.clubId}>
-                            <StyledTd>{club.clubName}</StyledTd>
+                            <StyledTd fontSize="1.1rem">
+                                <PointerSpan
+                                    onClick={() => {
+                                        if (club.clubId !== undefined) {
+                                            handleClubClick(club.clubId);
+                                        }
+                                    }}
+                                >
+                                    {club.clubName}
+                                </PointerSpan>
+                            </StyledTd>
                             <StyledTd>{club.clubIntro}</StyledTd>
                         </StyledTr>
                     ))}

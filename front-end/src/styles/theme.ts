@@ -153,3 +153,7 @@ export const StyledTr = styled.tr<TrProps>`
     padding: ${(props) => props.padding || "5px 0"};
     width: ${(props) => props.width || "500px"};
 `;
+
+export const PointerSpan = styled.span`
+    cursor: pointer;
+`;
