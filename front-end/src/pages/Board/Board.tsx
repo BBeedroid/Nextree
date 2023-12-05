@@ -35,20 +35,36 @@ const Board = (): ReactElement => {
 
     return (
         <Box>
-            <Container>
+            <Container width="950px" height="600px">
                 <Title>게시글 목록</Title>
                 <Table>
                     <StyledTr>
-                        <StyledTd fontSize="1.3rem" fontWeight="bold">
+                        <StyledTd
+                            fontSize="1.3rem"
+                            fontWeight="bold"
+                            width="650px"
+                        >
                             제목
                         </StyledTd>
-                        <StyledTd fontSize="1.3rem" fontWeight="bold">
+                        <StyledTd
+                            fontSize="1.3rem"
+                            fontWeight="bold"
+                            width="100px"
+                        >
                             작성자
                         </StyledTd>
-                        <StyledTd fontSize="1.3rem" fontWeight="bold">
+                        <StyledTd
+                            fontSize="1.3rem"
+                            fontWeight="bold"
+                            width="100px"
+                        >
                             작성일
                         </StyledTd>
-                        <StyledTd fontSize="1.3rem" fontWeight="bold">
+                        <StyledTd
+                            fontSize="1.3rem"
+                            fontWeight="bold"
+                            width="100px"
+                        >
                             조회수
                         </StyledTd>
                     </StyledTr>
@@ -64,17 +80,17 @@ const Board = (): ReactElement => {
                                 >
                                     {post ? post.postTitle : ""}
                                 </PointerSpan>
-                                <StyledTd>
-                                    {post ? post.memberNickname : ""}
-                                </StyledTd>
-                                <StyledTd>
-                                    {post && post.createdTime
-                                        ? dateFormat(post.createdTime)
-                                        : ""}
-                                </StyledTd>
-                                <StyledTd>
-                                    {post ? post.postViewCount : ""}
-                                </StyledTd>
+                            </StyledTd>
+                            <StyledTd>
+                                {post ? post.memberNickname : ""}
+                            </StyledTd>
+                            <StyledTd>
+                                {post && post.createdTime
+                                    ? dateFormat(post.createdTime)
+                                    : ""}
+                            </StyledTd>
+                            <StyledTd>
+                                {post ? post.postViewCount : ""}
                             </StyledTd>
                         </StyledTr>
                     ))}

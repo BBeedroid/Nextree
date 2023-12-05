@@ -76,6 +76,19 @@ export interface TrProps {
     width?: string;
 }
 
+export interface ModalProps {
+    padding?: string;
+    width?: string;
+    height?: string;
+}
+
+export interface TextareaProps {
+    margin?: string;
+    padding?: string;
+    width?: string;
+    height?: string;
+}
+
 export const Box = styled.div<BoxProps>`
     display: flex;
     justify-content: ${(props) => props.justify || "center"};
@@ -109,14 +122,14 @@ export const Button = styled.button<ButtonProps>`
     font-size: 1rem;
 `;
 
-export const RightButtonDiv = styled.div<RightButtonDivProps>`
+export const LeftButtonDiv = styled.div<LeftButtonDivProps>`
     float: left;
     padding: ${(props) => props.padding || "5px 0"};
     width: ${(props) => props.width || "150px"};
     height: ${(props) => props.height || "45px"};
 `;
 
-export const LeftButtonDiv = styled.div<LeftButtonDivProps>`
+export const RightButtonDiv = styled.div<RightButtonDivProps>`
     display: inline-block;
     padding: ${(props) => props.padding || "5px 0"};
     width: ${(props) => props.width || "150px"};
@@ -156,4 +169,30 @@ export const StyledTr = styled.tr<TrProps>`
 
 export const PointerSpan = styled.span`
     cursor: pointer;
+`;
+
+export const Modal = styled.div<ModalProps>`
+    padding: ${(props) => props.padding || "5px 0"};
+    width: ${(props) => props.width || "400px"};
+    height: ${(props) => props.height || "450px"};
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    z-index: 11;
+`;
+
+export const ModalInputContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+
+export const Textarea = styled.textarea<TextareaProps>`
+    margin: ${(props) => props.margin || "10px 0"};
+    padding: ${(props) => props.padding || "10px 20px"};
+    width: ${(props) => props.width || "300px"};
+    height: ${(props) => props.height || "250px"};
 `;
