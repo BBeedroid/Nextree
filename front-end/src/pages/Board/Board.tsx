@@ -27,7 +27,7 @@ const Board = (): ReactElement => {
     }, [boardId]);
 
     const handlePostClick = (postId: number): void => {
-        navigate(`/post/${postId}`);
+        navigate(`/club/${clubId}/board/${boardId}/post/${postId}`);
     };
 
     const clubIdNum = clubId ? parseInt(clubId, 10) : null;
