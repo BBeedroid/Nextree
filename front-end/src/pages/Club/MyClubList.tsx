@@ -1,4 +1,5 @@
 import React, { useState, useEffect, ReactElement } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     Box,
     Container,
@@ -6,17 +7,23 @@ import {
     StyledTd,
     StyledTr,
     Title,
+    PointerSpan,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
 import { MembershipDTO } from "../Util/dtoTypes";
-import { fetchJoinedClubs } from "./clubService/clubservice";
+import { fetchJoinedClubs } from "./utils/clubservice";
 
 const MyClubList = (): ReactElement => {
     const [memberships, setMemberships] = useState<MembershipDTO[]>([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchJoinedClubs().then(setMemberships).catch(console.error);
     }, []);
+
+    const handleClubClick = (clubId: number): void => {
+        navigate(`/club/${clubId}`);
+    };
 
     return (
         <Box>
@@ -33,7 +40,17 @@ const MyClubList = (): ReactElement => {
                     </StyledTr>
                     {memberships.map((membership) => (
                         <StyledTr key={membership.memberId}>
-                            <StyledTd>{membership.clubName}</StyledTd>
+                            <StyledTd fontSize="1.1rem">
+                                <PointerSpan
+                                    onClick={() => {
+                                        if (membership.clubId !== undefined) {
+                                            handleClubClick(membership.clubId);
+                                        }
+                                    }}
+                                >
+                                    {membership.clubName}
+                                </PointerSpan>
+                            </StyledTd>
                             <StyledTd>{membership.role}</StyledTd>
                         </StyledTr>
                     ))}
