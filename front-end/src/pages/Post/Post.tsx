@@ -1,5 +1,7 @@
 import React, { ReactElement, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { SPRING_API_URL } from "../../config";
 import { PostDTO } from "../Util/dtoTypes";
 import { fetchPost } from "./utils/postservice";
 import { dateFormat } from "../Util/utilservice";
@@ -32,6 +34,32 @@ const Post = (): ReactElement => {
         navigate(
             `/club/${clubId}/board/${boardId}/post/${modifyPostId}/modify`,
         );
+    };
+
+    const handleDeleteClick = async (deletePostId: number): Promise<void> => {
+        const confirmDelete = window.confirm("정말로 게시글을 삭제하겠습니까?");
+
+        if (confirmDelete) {
+            try {
+                const response = await axios.delete(
+                    `${SPRING_API_URL}/api/post`,
+                    {
+                        params: { postId: deletePostId },
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem(
+                                "token",
+                            )}`,
+                        },
+                    },
+                );
+                console.log("Deleted post: ", response.data);
+                alert("성공적으로 게시글을 삭제했습니다.");
+                navigate(`/club/${clubId}/board/${boardId}`);
+            } catch (error) {
+                console.error("An error occurred", error);
+                alert("게시판 삭제에 실패했습니다.");
+            }
+        }
     };
 
     const clubIdNum = clubId ? parseInt(clubId, 10) : null;
@@ -91,7 +119,17 @@ const Post = (): ReactElement => {
                     </Button>
                 </MiddleButtonDiv>
                 <RightButtonDiv>
-                    <Button>삭제</Button>
+                    <Button
+                        onClick={() => {
+                            if (postId) {
+                                handleDeleteClick(parseInt(postId, 10));
+                            } else {
+                                console.log("postId is undefined");
+                            }
+                        }}
+                    >
+                        삭제
+                    </Button>
                 </RightButtonDiv>
             </Container>
         </Box>
