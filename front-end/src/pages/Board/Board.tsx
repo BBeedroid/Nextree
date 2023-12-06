@@ -53,19 +53,28 @@ const Board = (): ReactElement => {
     };
 
     const handleDeleteClick = async (deleteBoardId: number): Promise<void> => {
-        try {
-            const response = await axios.delete(`${SPRING_API_URL}/api/board`, {
-                params: { boardId: deleteBoardId },
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            });
-            console.log("Deleted board: ", response.data);
-            alert("성공적으로 게시판을 삭제했습니다.");
-            navigate(`/club/${clubId}`);
-        } catch (error) {
-            console.error("An error occurred", error);
-            alert("게시판 삭제에 실패했습니다.");
+        const confirmDelete = window.confirm("정말로 게시판을 삭제하겠습니까?");
+
+        if (confirmDelete) {
+            try {
+                const response = await axios.delete(
+                    `${SPRING_API_URL}/api/board`,
+                    {
+                        params: { boardId: deleteBoardId },
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem(
+                                "token",
+                            )}`,
+                        },
+                    },
+                );
+                console.log("Deleted board: ", response.data);
+                alert("성공적으로 게시판을 삭제했습니다.");
+                navigate(`/club/${clubId}`);
+            } catch (error) {
+                console.error("An error occurred", error);
+                alert("게시판 삭제에 실패했습니다.");
+            }
         }
     };
 
@@ -142,6 +151,7 @@ const Board = (): ReactElement => {
                 </MiddleButtonDiv>
                 {membership?.role === "PRESIDENT" && (
                     <ThirdButtonDiv>
+                        <Button>게시판 수정</Button>
                         <Button
                             onClick={() => {
                                 if (boardId) {
