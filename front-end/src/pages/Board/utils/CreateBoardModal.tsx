@@ -19,9 +19,8 @@ const CreateBoardModal = ({
     onClose: () => void;
     onBoardCreate: () => void;
 }): ReactElement => {
-    const initialBoardState: BoardDTO = { boardTitle: "" };
     const { clubId } = useParams();
-
+    const initialBoardState: BoardDTO = { boardTitle: "" };
     const [board, setBoard] = useState<BoardDTO>(initialBoardState);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {

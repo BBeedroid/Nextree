@@ -7,7 +7,7 @@ import {
     fetchBoard,
     fetchMembership,
 } from "./utils/boardservice";
-import { dateFormat } from "../Util/utilservice";
+import { dateFormat, toggleModal } from "../Util/utilservice";
 import {
     Box,
     Container,
@@ -20,9 +20,11 @@ import {
     LeftButtonDiv,
     MiddleButtonDiv,
     ThirdButtonDiv,
+    Overlay,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
 import { SPRING_API_URL } from "../../config";
+import ModifyBoardModal from "./utils/ModifyBoardModal";
 
 const Board = (): ReactElement => {
     const { clubId, boardId } = useParams();
@@ -30,6 +32,8 @@ const Board = (): ReactElement => {
     const [board, setBoard] = useState<BoardDTO | undefined>();
     const [membership, setMembership] = useState<MembershipDTO | undefined>();
     const navigate = useNavigate();
+
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (boardId) {
@@ -75,6 +79,13 @@ const Board = (): ReactElement => {
                 console.error("An error occurred", error);
                 alert("게시판 삭제에 실패했습니다.");
             }
+        }
+    };
+
+    const refreshBoardList = (): void => {
+        if (boardId) {
+            const boardIdNum = parseInt(boardId, 10);
+            fetchBoard(boardIdNum).then(setBoard).catch(console.log);
         }
     };
 
@@ -151,7 +162,9 @@ const Board = (): ReactElement => {
                 </MiddleButtonDiv>
                 {membership?.role === "PRESIDENT" && (
                     <ThirdButtonDiv>
-                        <Button>게시판 수정</Button>
+                        <Button onClick={toggleModal(setIsModalOpen)}>
+                            게시판 수정
+                        </Button>
                         <Button
                             onClick={() => {
                                 if (boardId) {
@@ -164,6 +177,15 @@ const Board = (): ReactElement => {
                             게시판 삭제
                         </Button>
                     </ThirdButtonDiv>
+                )}
+                {isModalOpen && (
+                    <>
+                        <Overlay onClick={toggleModal(setIsModalOpen)} />
+                        <ModifyBoardModal
+                            onClose={toggleModal(setIsModalOpen)}
+                            onBoardModify={refreshBoardList}
+                        />
+                    </>
                 )}
             </Container>
         </Box>
