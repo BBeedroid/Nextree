@@ -1,5 +1,6 @@
 import React, { ReactElement, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 import { PostDTO, BoardDTO, MembershipDTO } from "../Util/dtoTypes";
 import {
     fetchPostsByBoard,
@@ -21,6 +22,7 @@ import {
     ThirdButtonDiv,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
+import { SPRING_API_URL } from "../../config";
 
 const Board = (): ReactElement => {
     const { clubId, boardId } = useParams();
@@ -40,8 +42,9 @@ const Board = (): ReactElement => {
 
     useEffect(() => {
         if (clubId) {
-            const clubIdNum = parseInt(clubId, 10);
-            fetchMembership(clubIdNum).then(setMembership).catch(console.error);
+            fetchMembership(parseInt(clubId, 10))
+                .then(setMembership)
+                .catch(console.error);
         }
     }, [clubId]);
 
@@ -49,16 +52,26 @@ const Board = (): ReactElement => {
         navigate(`/club/${clubId}/board/${boardId}/post/${postId}`);
     };
 
-    const clubIdNum = clubId ? parseInt(clubId, 10) : null;
+    const handleDeleteClick = async (deleteBoardId: number): Promise<void> => {
+        try {
+            const response = await axios.delete(`${SPRING_API_URL}/api/board`, {
+                params: { boardId: deleteBoardId },
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            });
+            console.log("Deleted board: ", response.data);
+            alert("성공적으로 게시판을 삭제했습니다.");
+        } catch (error) {
+            console.error("An error occurred", error);
+            alert("게시판 삭제에 실패했습니다.");
+        }
+    };
 
     return (
         <Box>
             <Container width="950px" height="600px">
-                <Title>
-                    {board
-                        ? `"${board.boardTitle}" 게시글 목록`
-                        : "게시글 목록"}
-                </Title>
+                <Title>{board ? `"${board.boardTitle}"` : "게시글 목록"}</Title>
                 <Table>
                     <StyledTr>
                         <StyledTd
@@ -119,7 +132,7 @@ const Board = (): ReactElement => {
                 </Table>
                 <LeftButtonDiv>
                     <NavigateButton
-                        path={`/club/${clubIdNum}`}
+                        path={`/club/${clubId}`}
                         label="게시판 목록"
                     />
                 </LeftButtonDiv>
@@ -128,7 +141,17 @@ const Board = (): ReactElement => {
                 </MiddleButtonDiv>
                 {membership?.role === "PRESIDENT" && (
                     <ThirdButtonDiv>
-                        <Button>게시판 삭제</Button>
+                        <Button
+                            onClick={() => {
+                                if (boardId) {
+                                    handleDeleteClick(parseInt(boardId, 10));
+                                } else {
+                                    console.log("boardId is undefined");
+                                }
+                            }}
+                        >
+                            게시판 삭제
+                        </Button>
                     </ThirdButtonDiv>
                 )}
             </Container>
