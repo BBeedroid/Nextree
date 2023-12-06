@@ -42,6 +42,9 @@ public class Club extends BaseTimeEntity {
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Membership> memberships = new ArrayList<>();
 
+    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Board> boards = new ArrayList<>();
+
     public ClubDTO EntityToDTO() {
         return ClubDTO.builder()
                 .clubId(this.clubId)
