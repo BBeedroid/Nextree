@@ -29,6 +29,10 @@ public class BoardServiceLogic implements BoardService {
     public void register(Long clubId, BoardDTO boardDTO, Long currentUserId) {
         Club club = clubStore.findById(clubId)
                 .orElseThrow(() -> new NoSuchClubException("No such club with id : " + clubId));
+        if (club.getBoardCount() > 5) {
+            throw new BoardLimitOverException("Max board count is 5.");
+        }
+
         Optional.ofNullable(boardStore.findByClub_ClubIdAndBoardTitle(clubId, boardDTO.getBoardTitle()))
                 .ifPresent(board -> {throw new BoardDuplicationException("Same board title already exists.");});
 
@@ -40,6 +44,9 @@ public class BoardServiceLogic implements BoardService {
         Board board = boardDTO.DTOToEntity();
         board.setClub(club);
         boardStore.save(board);
+
+        club.setBoardCount(club.getBoardCount() + 1);
+        clubStore.save(club);
     }
 
     @Override
@@ -90,6 +97,7 @@ public class BoardServiceLogic implements BoardService {
     public void remove(Long boardId, Long currentUserId) {
         Board board = boardStore.findById(boardId)
                 .orElseThrow(() -> new NoSuchBoardException("No such board in the club."));
+        Club club = board.getClub();
 
         Role currentUserRole = getCurrentUserRoleInClub(board.getClub().getClubId(), currentUserId);
         if (currentUserRole != Role.PRESIDENT) {
@@ -97,6 +105,9 @@ public class BoardServiceLogic implements BoardService {
         }
 
         boardStore.delete(board);
+
+        club.setBoardCount(club.getBoardCount() - 1);
+        clubStore.save(club);
     }
 
     private Role getCurrentUserRoleInClub(Long clubId, Long currentUserId) {
