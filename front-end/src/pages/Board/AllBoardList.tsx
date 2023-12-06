@@ -15,6 +15,7 @@ import {
     RightButtonDiv,
     Overlay,
     Button,
+    ButtonsDiv,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
 import { BoardDTO, ClubDTO, MembershipDTO } from "../Util/dtoTypes";
@@ -145,22 +146,39 @@ const AllBoardList = (): ReactElement => {
                         <Button onClick={toggleModal(setIsModalOpen)}>
                             게시판 생성
                         </Button>
-                        <Button
-                            margin="5px 0"
-                            width="80px"
-                            height="25px"
-                            background="#FFBE0A"
-                            fontSize="0.8rem"
-                            onClick={() => {
-                                if (clubId) {
-                                    handleDeleteClick(parseInt(clubId, 10));
-                                } else {
-                                    console.log("clubId is undefined");
-                                }
-                            }}
-                        >
-                            클럽 삭제
-                        </Button>
+                        <ButtonsDiv>
+                            <Button
+                                margin="5px 0"
+                                width="80px"
+                                height="25px"
+                                fontSize="0.8rem"
+                                onClick={() => {
+                                    if (clubId) {
+                                        navigate(`/club/${clubId}/member`);
+                                    } else {
+                                        console.log("clubId is undefined");
+                                    }
+                                }}
+                            >
+                                멤버 목록
+                            </Button>
+                            <Button
+                                margin="5px 0"
+                                width="80px"
+                                height="25px"
+                                background="#FFBE0A"
+                                fontSize="0.8rem"
+                                onClick={() => {
+                                    if (clubId) {
+                                        handleDeleteClick(parseInt(clubId, 10));
+                                    } else {
+                                        console.log("clubId is undefined");
+                                    }
+                                }}
+                            >
+                                클럽 삭제
+                            </Button>
+                        </ButtonsDiv>
                     </RightButtonDiv>
                 ) : (
                     <Button
