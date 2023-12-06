@@ -17,9 +17,11 @@ export interface BoxProps {
 }
 
 export interface ContainerProps {
+    margin?: string;
     padding?: string;
     width?: string;
     height?: string;
+    border?: string;
 }
 
 export interface InputProps {
@@ -80,7 +82,32 @@ export interface TextareaProps {
     margin?: string;
     padding?: string;
     width?: string;
+    minHeight?: string;
+    fontSize?: string;
+}
+
+export interface TextBoxProps {
+    margin?: string;
+    padding?: string;
+    width?: string;
+    minHeight?: string;
+    fontSize?: string;
+}
+
+export interface PostContainerProps {
+    display?: string;
+    flex?: string;
+    align?: string;
+    margin?: string;
+    padding?: string;
+    width?: string;
     height?: string;
+    border?: string;
+}
+
+export interface ButtonsProps {
+    justify?: string;
+    gap?: string;
 }
 
 export const Box = styled.div<BoxProps>`
@@ -92,10 +119,11 @@ export const Box = styled.div<BoxProps>`
 `;
 
 export const Container = styled.div<ContainerProps>`
+    margin: ${(props) => props.padding};
     padding: ${(props) => props.padding || "10px 20px"};
     width: ${(props) => props.width || "500px"};
     height: ${(props) => props.height || "350px"};
-    border: 1px solid grey;
+    border: ${(props) => props.border || "1px solid grey"};
     border-radius: 5px;
 `;
 
@@ -123,13 +151,6 @@ export const LeftButtonDiv = styled.div<ButtonDivProps>`
     float: left;
 `;
 
-export const RightButtonDiv = styled.div<ButtonDivProps>`
-    padding: ${(props) => props.padding || "5px 0"};
-    width: ${(props) => props.width || "150px"};
-    height: ${(props) => props.height || "45px"};
-    display: inline-block;
-`;
-
 export const MiddleButtonDiv = styled.div<ButtonDivProps>`
     padding: ${(props) => props.padding || "5px 0"};
     width: ${(props) => props.width || "150px"};
@@ -138,7 +159,7 @@ export const MiddleButtonDiv = styled.div<ButtonDivProps>`
     margin-left: 5%;
 `;
 
-export const ThirdButtonDiv = styled.div<ButtonDivProps>`
+export const RightButtonDiv = styled.div<ButtonDivProps>`
     padding: ${(props) => props.padding || "5px 0"};
     width: ${(props) => props.width || "150px"};
     height: ${(props) => props.height || "45px"};
@@ -157,7 +178,7 @@ export const Title = styled.div<TitleProps>`
 export const Table = styled.table<TableProps>`
     border-collapse: collapse;
     min-width: ${(props) => props.minWidth || "500px"};
-    min-height: ${(props) => props.minHeight || "300px"};
+    min-height: ${(props) => props.minHeight || "100px"};
 `;
 
 export const StyledTd = styled.td<TdProps>`
@@ -203,7 +224,8 @@ export const Textarea = styled.textarea<TextareaProps>`
     margin: ${(props) => props.margin || "10px 0"};
     padding: ${(props) => props.padding || "10px 20px"};
     width: ${(props) => props.width || "300px"};
-    height: ${(props) => props.height || "250px"};
+    min-height: ${(props) => props.minHeight || "250px"};
+    font-size: ${(props) => props.fontSize || "1rem"};
 `;
 
 export const Overlay = styled.div`
@@ -214,4 +236,32 @@ export const Overlay = styled.div`
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 10;
+`;
+
+export const TextBox = styled.div<TextBoxProps>`
+    margin: ${(props) => props.padding};
+    padding: ${(props) => props.padding || "10px 20px"};
+    width: ${(props) => props.width || "500px"};
+    min-height: ${(props) => props.minHeight || "400px"};
+    font-size: ${(props) => props.fontSize || "1rem"};
+    border: 1px solid grey;
+    border-radius: 5px;
+`;
+
+export const PostContainer = styled.div<PostContainerProps>`
+    display: ${(props) => props.display || "flex"};
+    flex-direction: ${(props) => props.flex || "column"};
+    align-items: ${(props) => props.align || "flex-start"};
+    margin: ${(props) => props.padding};
+    padding: ${(props) => props.padding || "10px 20px"};
+    width: ${(props) => props.width || "500px"};
+    height: ${(props) => props.height || "350px"};
+    border: ${(props) => props.border || "1px solid grey"};
+    border-radius: 5px;
+`;
+
+export const ButtonsDiv = styled.div<ButtonsProps>`
+    display: flex;
+    justify-content: ${(props) => props.justify || "flex-start"};
+    gap: ${(props) => props.gap || "10px"};
 `;
