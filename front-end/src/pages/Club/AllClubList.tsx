@@ -1,6 +1,5 @@
 import React, { useState, useEffect, ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import {
     Box,
     Container,
@@ -12,22 +11,13 @@ import {
     Button,
     RightButtonDiv,
     LeftButtonDiv,
+    Overlay,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
 import { ClubDTO } from "../Util/dtoTypes";
 import { fetchAllClubs, fetchMembership } from "./utils/clubservice";
 import { toggleModal } from "../Util/utilservice";
 import CreateClubModal from "./utils/CreateClubModal";
-
-const Overlay = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 10;
-`;
 
 const AllClubList = (): ReactElement => {
     const [clubs, setClubs] = useState<ClubDTO[]>([]);
