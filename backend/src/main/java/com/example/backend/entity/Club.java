@@ -3,6 +3,8 @@ package com.example.backend.entity;
 import com.example.backend.dto.ClubDTO;
 import com.example.backend.util.BaseTimeEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +35,8 @@ public class Club extends BaseTimeEntity {
     private String clubIntro;
 
     @Column(name = "BOARD_COUNT")
-    @Size(max = 5)
+    @Min(0)
+    @Max(5)
     private long boardCount;
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true)
