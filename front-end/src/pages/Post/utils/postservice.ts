@@ -18,6 +18,6 @@ export const fetchPost = async (
         return response.data.item;
     } catch (error) {
         console.error("게시글을 불러오는 데 실패했습니다.", error);
-        throw error;
+        return undefined;
     }
 };

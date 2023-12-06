@@ -43,12 +43,12 @@ const LoginComponent = ({ handleLogin }: LoginProps): ReactElement => {
                         onChange={(e) => setMemberPassword(e.target.value)}
                         placeholder="Password"
                     />
-                    <RightButtonDiv>
-                        <Button type="submit">로그인</Button>
-                    </RightButtonDiv>
                     <LeftButtonDiv>
-                        <NavigateButton path="/signup" label="회원 가입" />
+                        <Button type="submit">로그인</Button>
                     </LeftButtonDiv>
+                    <RightButtonDiv>
+                        <NavigateButton path="/signup" label="회원 가입" />
+                    </RightButtonDiv>
                 </form>
             </Container>
         </Box>

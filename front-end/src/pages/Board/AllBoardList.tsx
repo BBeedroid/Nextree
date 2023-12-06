@@ -8,21 +8,32 @@ import {
     StyledTr,
     Title,
     PointerSpan,
+    LeftButtonDiv,
+    MiddleButtonDiv,
+    ThirdButtonDiv,
+    Overlay,
+    Button,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
-import { BoardDTO } from "../Util/dtoTypes";
-import { fetchAllBoards } from "./utils/boardservice";
+import { BoardDTO, ClubDTO } from "../Util/dtoTypes";
+import { fetchAllBoards, fetchClub } from "./utils/boardservice";
+import { toggleModal } from "../Util/utilservice";
+import CreateBoardModal from "./utils/CreateBoardModal";
 
 const AllBoardList = (): ReactElement => {
     const { clubId } = useParams();
     const [boards, setBoards] = useState<BoardDTO[]>([]);
+    const [club, setClub] = useState<ClubDTO | undefined>();
     const navigate = useNavigate();
+
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (clubId) {
-            fetchAllBoards(parseInt(clubId, 10))
-                .then(setBoards)
-                .catch(console.error);
+            const clubIdNum = parseInt(clubId, 10);
+            fetchAllBoards(clubIdNum).then(setBoards).catch(console.error);
+
+            fetchClub(clubIdNum).then(setClub).catch(console.error);
         }
     }, [clubId]);
 
@@ -30,16 +41,20 @@ const AllBoardList = (): ReactElement => {
         navigate(`/club/${clubId}/board/${boardId}`);
     };
 
+    const refreshBoardList = (): void => {
+        if (clubId) {
+            const clubIdNum = parseInt(clubId, 10);
+            fetchAllBoards(clubIdNum).then(setBoards).catch(console.error);
+        }
+    };
+
     return (
         <Box>
             <Container height="500px">
-                <Title>게시판 목록</Title>
+                <Title>
+                    {club ? `"${club.clubName}" 게시판 목록` : "게시판 목록"}
+                </Title>
                 <Table>
-                    <StyledTr>
-                        <StyledTd fontSize="1.3rem" fontWeight="bold">
-                            게시판 이름
-                        </StyledTd>
-                    </StyledTr>
                     {boards.map((board) => (
                         <StyledTr key={board.boardId}>
                             <StyledTd fontSize="1.1rem">
@@ -56,7 +71,30 @@ const AllBoardList = (): ReactElement => {
                         </StyledTr>
                     ))}
                 </Table>
-                <NavigateButton path="/my-club-list" label="내 클럽 목록" />
+                <LeftButtonDiv>
+                    <NavigateButton path="/my-club-list" label="내 클럽 목록" />
+                </LeftButtonDiv>
+                <MiddleButtonDiv>
+                    <NavigateButton
+                        path="/all-club-list"
+                        label="전체 클럽 목록"
+                    />
+                </MiddleButtonDiv>
+                <ThirdButtonDiv>
+                    <Button onClick={toggleModal(setIsModalOpen)}>
+                        게시판 생성
+                    </Button>
+                </ThirdButtonDiv>
+
+                {isModalOpen && (
+                    <>
+                        <Overlay onClick={toggleModal(setIsModalOpen)} />
+                        <CreateBoardModal
+                            onClose={toggleModal(setIsModalOpen)}
+                            onBoardCreate={refreshBoardList}
+                        />
+                    </>
+                )}
             </Container>
         </Box>
     );

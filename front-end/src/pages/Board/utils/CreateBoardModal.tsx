@@ -1,7 +1,8 @@
 import React, { ReactElement, useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { SPRING_API_URL } from "../../../config";
-import { ClubDTO } from "../../Util/dtoTypes";
+import { BoardDTO } from "../../Util/dtoTypes";
 import {
     Modal,
     Input,
@@ -9,36 +10,34 @@ import {
     RightButtonDiv,
     LeftButtonDiv,
     ModalInputContainer,
-    Textarea,
 } from "../../../styles/theme";
 
-const CreateClubModal = ({
+const CreateBoardModal = ({
     onClose,
-    onClubCreate,
+    onBoardCreate,
 }: {
     onClose: () => void;
-    onClubCreate: () => void;
+    onBoardCreate: () => void;
 }): ReactElement => {
-    const initialClubState: ClubDTO = {
-        clubName: "",
-        clubIntro: "",
-    };
+    const initialBoardState: BoardDTO = { boardTitle: "" };
+    const { clubId } = useParams();
 
-    const [club, setClub] = useState<ClubDTO>(initialClubState);
+    const [board, setBoard] = useState<BoardDTO>(initialBoardState);
 
-    const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    ): void => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const { name, value } = e.target;
-        setClub({ ...club, [name]: value });
+        setBoard({ ...board, [name]: value });
     };
 
-    const handleCreateClub = async (): Promise<void> => {
+    const handleCreateBoard = async (): Promise<void> => {
         try {
-            const response = await axios.post<ClubDTO>(
-                `${SPRING_API_URL}/api/club`,
-                club,
+            const response = await axios.post<BoardDTO>(
+                `${SPRING_API_URL}/api/board`,
+                board,
                 {
+                    params: {
+                        clubId,
+                    },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem(
                             "token",
@@ -46,14 +45,14 @@ const CreateClubModal = ({
                     },
                 },
             );
-            setClub(response.data);
-            onClubCreate();
+            setBoard(response.data);
+            onBoardCreate();
             onClose();
         } catch (catchError) {
             if (axios.isAxiosError(catchError) && catchError.response) {
                 const errorMessage =
                     catchError.response.data.errorMessage ||
-                    "Create club failed";
+                    "Create board failed";
                 alert(errorMessage);
                 console.error("An error occurred: ", catchError);
             } else {
@@ -64,27 +63,21 @@ const CreateClubModal = ({
     };
 
     return (
-        <Modal>
+        <Modal height="150px">
             <ModalInputContainer>
                 <Input
                     type="text"
-                    name="clubName"
-                    value={club.clubName}
+                    name="boardTitle"
+                    value={board.boardTitle}
                     onChange={handleChange}
-                    placeholder="클럽 이름을 입력해주세요."
+                    placeholder="게시판 이름을 입력해주세요."
                     margin="10px 0"
                     padding="10px 20px"
                     width="300px"
                 />
-                <Textarea
-                    name="clubIntro"
-                    value={club.clubIntro}
-                    onChange={handleChange}
-                    placeholder="클럽 소개를 입력해주세요."
-                />
             </ModalInputContainer>
             <LeftButtonDiv>
-                <Button onClick={handleCreateClub}>생성</Button>
+                <Button onClick={handleCreateBoard}>생성</Button>
             </LeftButtonDiv>
             <RightButtonDiv>
                 <Button onClick={onClose}>취소</Button>
@@ -93,4 +86,4 @@ const CreateClubModal = ({
     );
 };
 
-export default CreateClubModal;
+export default CreateBoardModal;
