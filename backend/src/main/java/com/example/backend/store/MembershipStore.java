@@ -16,6 +16,6 @@ public interface MembershipStore extends JpaRepository<Membership, Long> {
     void deleteByClub_IdAndMember_Id(@Param("clubId") Long clubId, @Param("memberId") Long memberId);
 
     @Modifying
-    @Query("DELETE FROM Membership m WHERE m.club.clubId = :clubId AND m.membershipId = :membershipId")
-    void deleteByCLub_ClubIdAndMembershipId(@Param("clubId") Long clubId, @Param("membershipId") Long membershipId);
+    @Query("DELETE FROM Membership m WHERE m.membershipId = :membershipId")
+    void deleteByMembershipId(@Param("membershipId") Long membershipId);
 }
