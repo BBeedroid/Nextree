@@ -9,7 +9,11 @@ import {
     Table,
     StyledTd,
     StyledTr,
-    Title,
+    LeftButtonDiv,
+    MiddleButtonDiv,
+    RightButtonDiv,
+    Button,
+    TextBox,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
 
@@ -28,41 +32,50 @@ const Post = (): ReactElement => {
 
     return (
         <Box>
-            <Container>
-                <Title>게시글</Title>
+            <Container width="950px" height="600px" border="none">
                 {post ? (
-                    <Table>
-                        <StyledTr>
-                            <StyledTd fontSize="1.3rem" fontWeight="bold">
-                                {post ? post.postTitle : ""}
-                            </StyledTd>
-                            <StyledTd>
-                                {post ? post.memberNickname : ""}
-                            </StyledTd>
-                        </StyledTr>
-                        <StyledTr>
-                            <StyledTd>{post ? post.postContent : ""}</StyledTd>
-                        </StyledTr>
-                        <StyledTr>
-                            <StyledTd>
-                                {post && post.createdTime
-                                    ? dateFormat(post.createdTime)
-                                    : ""}
-                            </StyledTd>
-                        </StyledTr>
-                        <StyledTr>
-                            <StyledTd>
-                                {post ? post.postViewCount : ""}
-                            </StyledTd>
-                        </StyledTr>
-                    </Table>
+                    <>
+                        <Table>
+                            <StyledTr>
+                                <StyledTd
+                                    fontSize="1.5rem"
+                                    fontWeight="bold"
+                                    width="700px"
+                                >
+                                    {post ? post.postTitle : ""}
+                                </StyledTd>
+                                <StyledTd width="100px">
+                                    {post ? post.memberNickname : ""}
+                                </StyledTd>
+                                <StyledTd width="100px">
+                                    {post && post.createdTime
+                                        ? dateFormat(post.createdTime)
+                                        : ""}
+                                </StyledTd>
+                                <StyledTd width="50px">
+                                    {post ? post.postViewCount : ""}
+                                </StyledTd>
+                            </StyledTr>
+                        </Table>
+                        <TextBox width="900px" fontSize="1.2rem">
+                            {post ? post.postContent : ""}
+                        </TextBox>
+                    </>
                 ) : (
                     <div>게시글을 불러오고 있습니다.</div>
                 )}
-                <NavigateButton
-                    path={`/club/${clubIdNum}/board/${boardIdNum}`}
-                    label="게시판으로"
-                />
+                <LeftButtonDiv>
+                    <NavigateButton
+                        path={`/club/${clubIdNum}/board/${boardIdNum}`}
+                        label="게시판으로"
+                    />
+                </LeftButtonDiv>
+                <MiddleButtonDiv>
+                    <Button>수정</Button>
+                </MiddleButtonDiv>
+                <RightButtonDiv>
+                    <Button>삭제</Button>
+                </RightButtonDiv>
             </Container>
         </Box>
     );

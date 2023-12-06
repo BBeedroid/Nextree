@@ -8,8 +8,8 @@ import {
     Container,
     Input,
     Button,
-    RightButtonDiv,
     LeftButtonDiv,
+    MiddleButtonDiv,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
 
@@ -88,9 +88,9 @@ const SignUp = (): ReactElement => {
                     <LeftButtonDiv>
                         <Button type="submit">회원가입</Button>
                     </LeftButtonDiv>
-                    <RightButtonDiv>
+                    <MiddleButtonDiv>
                         <NavigateButton path="/" label="취소" />
-                    </RightButtonDiv>
+                    </MiddleButtonDiv>
                 </form>
             </Container>
         </Box>

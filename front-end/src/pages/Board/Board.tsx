@@ -19,7 +19,7 @@ import {
     Button,
     LeftButtonDiv,
     MiddleButtonDiv,
-    ThirdButtonDiv,
+    RightButtonDiv,
     Overlay,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
@@ -161,7 +161,7 @@ const Board = (): ReactElement => {
                     <Button>글쓰기</Button>
                 </MiddleButtonDiv>
                 {membership?.role === "PRESIDENT" && (
-                    <ThirdButtonDiv>
+                    <RightButtonDiv>
                         <Button onClick={toggleModal(setIsModalOpen)}>
                             게시판 수정
                         </Button>
@@ -176,7 +176,7 @@ const Board = (): ReactElement => {
                         >
                             게시판 삭제
                         </Button>
-                    </ThirdButtonDiv>
+                    </RightButtonDiv>
                 )}
                 {isModalOpen && (
                     <>

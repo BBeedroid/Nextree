@@ -7,8 +7,8 @@ import {
     Modal,
     Input,
     Button,
-    RightButtonDiv,
     LeftButtonDiv,
+    MiddleButtonDiv,
     ModalInputContainer,
 } from "../../../styles/theme";
 import { fetchBoard } from "./boardservice";
@@ -87,9 +87,9 @@ const ModifyBoardModal = ({
             <LeftButtonDiv>
                 <Button onClick={handleModifyBoard}>수정</Button>
             </LeftButtonDiv>
-            <RightButtonDiv>
+            <MiddleButtonDiv>
                 <Button onClick={onClose}>취소</Button>
-            </RightButtonDiv>
+            </MiddleButtonDiv>
         </Modal>
     );
 };

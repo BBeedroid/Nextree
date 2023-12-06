@@ -7,8 +7,8 @@ import {
     Modal,
     Input,
     Button,
-    RightButtonDiv,
     LeftButtonDiv,
+    MiddleButtonDiv,
     ModalInputContainer,
 } from "../../../styles/theme";
 
@@ -78,9 +78,9 @@ const CreateBoardModal = ({
             <LeftButtonDiv>
                 <Button onClick={handleCreateBoard}>생성</Button>
             </LeftButtonDiv>
-            <RightButtonDiv>
+            <MiddleButtonDiv>
                 <Button onClick={onClose}>취소</Button>
-            </RightButtonDiv>
+            </MiddleButtonDiv>
         </Modal>
     );
 };

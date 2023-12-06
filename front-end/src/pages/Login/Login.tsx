@@ -7,8 +7,8 @@ import {
     Container,
     Input,
     Button,
-    RightButtonDiv,
     LeftButtonDiv,
+    MiddleButtonDiv,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
 
@@ -46,9 +46,9 @@ const LoginComponent = ({ handleLogin }: LoginProps): ReactElement => {
                     <LeftButtonDiv>
                         <Button type="submit">로그인</Button>
                     </LeftButtonDiv>
-                    <RightButtonDiv>
+                    <MiddleButtonDiv>
                         <NavigateButton path="/signup" label="회원 가입" />
-                    </RightButtonDiv>
+                    </MiddleButtonDiv>
                 </form>
             </Container>
         </Box>
