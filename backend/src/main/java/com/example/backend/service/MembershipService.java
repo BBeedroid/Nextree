@@ -12,5 +12,5 @@ public interface MembershipService {
     List<MembershipDTO> findAllMembershipsByMember(Long currentUserId);
     MembershipDTO modify(Long clubId, Long memberId, MembershipDTO membershipDTO);
     void remove(Long clubId, Long currentUserId);
-    void removeByPresident(Long clubId, Long membershipId, Long currentUserId);
+    void removeByPresident(Long membershipId);
 }

@@ -123,17 +123,18 @@ public class MembershipServiceLogic implements MembershipService {
 
     @Override
     @Transactional
-    public void removeByPresident(Long clubId, Long membershipId, Long currentUserId) {
-        Membership foundMembership = Optional.ofNullable(membershipStore.findByClub_ClubIdAndMember_MemberId(clubId, currentUserId))
-                .orElseThrow(() -> new NoSuchMembershipException(
-                        String.format("No such membership with clubId : [%s] memberId : [%s]", clubId, currentUserId)));
-        Role currentUserRole = getCurrentUserRoleInClub(clubId, currentUserId);
+    public void removeByPresident(Long membershipId) {
+        Membership foundMembership = membershipStore.findById(membershipId)
+                .orElseThrow(() -> new NoSuchMembershipException("No such membership with id : " + membershipId));
 
-        if (currentUserRole == Role.PRESIDENT) {
-            membershipStore.deleteByCLub_ClubIdAndMembershipId(clubId, membershipId);
-        } else {
-            throw new NoPermissionToRemoveMembershipException("Does not have permission to delete this membership.");
-        }
+            Club club = foundMembership.getClub();
+            Member member = foundMembership.getMember();
+
+            club.getMemberships().remove(foundMembership);
+            member.getMemberships().remove(foundMembership);
+
+//            membershipStore.delete(foundMembership);
+            membershipStore.deleteByMembershipId(membershipId);
     }
 
     private Role getCurrentUserRoleInClub(Long clubId, Long currentUserId) {

@@ -137,15 +137,10 @@ public class MembershipController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteMembershipByPresident(@RequestParam("clubId") Long clubId,
-                                                         @RequestParam("membershipId") Long membershipId,
-                                                         HttpServletRequest request) {
+    public ResponseEntity<?> deleteMembershipByPresident(@RequestParam("membershipId") Long membershipId) {
         ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
         try {
-            String token = jwtTokenProvider.resolveToken(request);
-            Long currentUserId = jwtTokenProvider.getMemberId(token);
-
-            membershipService.removeByPresident(clubId, membershipId, currentUserId);
+            membershipService.removeByPresident(membershipId);
             Map<String, String> returnMap = new HashMap<>();
             returnMap.put("message", "Successfully removed the membership.");
             responseDTO.setItem(returnMap);
