@@ -32,6 +32,7 @@ public class MembershipDTO {
     private String clubName;
 
     public MembershipDTO(Membership membership) {
+        this.membershipId = membership.getMembershipId();
         this.role = membership.getRole().toString();
         this.memberId = membership.getMember().getMemberId();
         this.clubId = membership.getClub().getClubId();

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ReactElement } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { SPRING_API_URL } from "../../config";
 import {
@@ -21,7 +21,6 @@ const AllMemberList = (): ReactElement => {
     const { clubId } = useParams();
     const [memberships, setMemberships] = useState<MembershipDTO[]>([]);
     const [club, setClub] = useState<ClubDTO | undefined>();
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (clubId) {
@@ -30,28 +29,22 @@ const AllMemberList = (): ReactElement => {
             fetchAllMembers(clubIdNum)
                 .then(setMemberships)
                 .catch(console.error);
+
             fetchClub(clubIdNum).then(setClub).catch(console.error);
         }
     }, [clubId]);
+
+    console.log(memberships);
 
     const handleDeleteMember = async (membershipId: number): Promise<void> => {
         const confirmDelete = window.confirm("정말로 클럽에서 추방하겠습니까?");
 
         if (confirmDelete) {
             try {
-                const clubIdParam = clubId;
-                if (!clubIdParam) {
-                    console.error("Club ID is undefined");
-                    alert("클럽 ID가 없습니다.");
-                    return;
-                }
-
-                const certainClubId = parseInt(clubIdParam, 10);
                 const response = await axios.delete(
                     `${SPRING_API_URL}/api/membership/delete`,
                     {
                         params: {
-                            clubId: certainClubId,
                             membershipId,
                         },
                         headers: {
@@ -63,7 +56,13 @@ const AllMemberList = (): ReactElement => {
                 );
                 console.log("Deleted member: ", response.data);
                 alert("성공적으로 클럽에서 추방했습니다.");
-                navigate(`/club/${clubId}/member`);
+                if (clubId) {
+                    const clubIdNum = parseInt(clubId, 10);
+
+                    fetchAllMembers(clubIdNum)
+                        .then(setMemberships)
+                        .catch(console.error);
+                }
             } catch (error) {
                 console.error("An error occurred", error);
                 alert("회원 추방에 실패했습니다.");
@@ -77,33 +76,41 @@ const AllMemberList = (): ReactElement => {
                 <Title>{club ? `"${club.clubName}" 회원` : "회원 목록"}</Title>
                 {memberships.length > 0 ? (
                     <Table minHeight="350px">
-                        {memberships.map((membership) => (
-                            <StyledTr key={membership.membershipId}>
-                                {membership.role !== "PRESIDENT" ? (
-                                    <StyledTd fontSize="1.1rem">
-                                        <PointerSpan
-                                            onClick={() => {
-                                                if (
-                                                    membership.memberId !==
-                                                    undefined
-                                                ) {
-                                                    handleDeleteMember(
-                                                        membership.memberId,
-                                                    );
-                                                }
-                                            }}
-                                        >
+                        {memberships.map((membership) => {
+                            console.log(membership); // Logging the entire membership object
+
+                            // Now explicitly returning the JSX
+                            return (
+                                <StyledTr key={membership.membershipId}>
+                                    {membership.role !== "PRESIDENT" ? (
+                                        <StyledTd fontSize="1.1rem">
+                                            <PointerSpan
+                                                onClick={() => {
+                                                    console.log(
+                                                        membership.membershipId,
+                                                    ); // Logging the membershipId
+                                                    if (
+                                                        membership.membershipId !==
+                                                        undefined
+                                                    ) {
+                                                        handleDeleteMember(
+                                                            membership.membershipId,
+                                                        );
+                                                    }
+                                                }}
+                                            >
+                                                {membership.memberNickname}
+                                            </PointerSpan>
+                                        </StyledTd>
+                                    ) : (
+                                        <StyledTd fontSize="1.1rem">
                                             {membership.memberNickname}
-                                        </PointerSpan>
-                                    </StyledTd>
-                                ) : (
-                                    <StyledTd fontSize="1.1rem">
-                                        {membership.memberNickname}
-                                    </StyledTd>
-                                )}
-                                <StyledTd>{membership.role}</StyledTd>
-                            </StyledTr>
-                        ))}
+                                        </StyledTd>
+                                    )}
+                                    <StyledTd>{membership.role}</StyledTd>
+                                </StyledTr>
+                            );
+                        })}
                     </Table>
                 ) : (
                     <Title fontSize="1.6rem">회원이 없습니다.</Title>
