@@ -7,7 +7,7 @@ import {
     fetchBoard,
     fetchMembership,
 } from "./utils/boardservice";
-import { dateFormat } from "../Util/utilservice";
+import { dateFormat, toggleModal } from "../Util/utilservice";
 import {
     Box,
     Container,
@@ -19,10 +19,12 @@ import {
     Button,
     LeftButtonDiv,
     MiddleButtonDiv,
-    ThirdButtonDiv,
+    RightButtonDiv,
+    Overlay,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
 import { SPRING_API_URL } from "../../config";
+import ModifyBoardModal from "./utils/ModifyBoardModal";
 
 const Board = (): ReactElement => {
     const { clubId, boardId } = useParams();
@@ -30,6 +32,8 @@ const Board = (): ReactElement => {
     const [board, setBoard] = useState<BoardDTO | undefined>();
     const [membership, setMembership] = useState<MembershipDTO | undefined>();
     const navigate = useNavigate();
+
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
         if (boardId) {
@@ -53,18 +57,35 @@ const Board = (): ReactElement => {
     };
 
     const handleDeleteClick = async (deleteBoardId: number): Promise<void> => {
-        try {
-            const response = await axios.delete(`${SPRING_API_URL}/api/board`, {
-                params: { boardId: deleteBoardId },
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            });
-            console.log("Deleted board: ", response.data);
-            alert("성공적으로 게시판을 삭제했습니다.");
-        } catch (error) {
-            console.error("An error occurred", error);
-            alert("게시판 삭제에 실패했습니다.");
+        const confirmDelete = window.confirm("정말로 게시판을 삭제하겠습니까?");
+
+        if (confirmDelete) {
+            try {
+                const response = await axios.delete(
+                    `${SPRING_API_URL}/api/board`,
+                    {
+                        params: { boardId: deleteBoardId },
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem(
+                                "token",
+                            )}`,
+                        },
+                    },
+                );
+                console.log("Deleted board: ", response.data);
+                alert("성공적으로 게시판을 삭제했습니다.");
+                navigate(`/club/${clubId}`);
+            } catch (error) {
+                console.error("An error occurred", error);
+                alert("게시판 삭제에 실패했습니다.");
+            }
+        }
+    };
+
+    const refreshBoardList = (): void => {
+        if (boardId) {
+            const boardIdNum = parseInt(boardId, 10);
+            fetchBoard(boardIdNum).then(setBoard).catch(console.log);
         }
     };
 
@@ -140,7 +161,10 @@ const Board = (): ReactElement => {
                     <Button>글쓰기</Button>
                 </MiddleButtonDiv>
                 {membership?.role === "PRESIDENT" && (
-                    <ThirdButtonDiv>
+                    <RightButtonDiv>
+                        <Button onClick={toggleModal(setIsModalOpen)}>
+                            게시판 수정
+                        </Button>
                         <Button
                             onClick={() => {
                                 if (boardId) {
@@ -152,7 +176,16 @@ const Board = (): ReactElement => {
                         >
                             게시판 삭제
                         </Button>
-                    </ThirdButtonDiv>
+                    </RightButtonDiv>
+                )}
+                {isModalOpen && (
+                    <>
+                        <Overlay onClick={toggleModal(setIsModalOpen)} />
+                        <ModifyBoardModal
+                            onClose={toggleModal(setIsModalOpen)}
+                            onBoardModify={refreshBoardList}
+                        />
+                    </>
                 )}
             </Container>
         </Box>

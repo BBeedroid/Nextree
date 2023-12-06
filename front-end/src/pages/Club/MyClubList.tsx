@@ -9,8 +9,8 @@ import {
     Title,
     PointerSpan,
     Button,
-    RightButtonDiv,
     LeftButtonDiv,
+    MiddleButtonDiv,
     Overlay,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
@@ -72,11 +72,11 @@ const MyClubList = (): ReactElement => {
                         label="전체 클럽 목록"
                     />
                 </LeftButtonDiv>
-                <RightButtonDiv>
+                <MiddleButtonDiv>
                     <Button onClick={toggleModal(setIsModalOpen)}>
                         클럽 생성
                     </Button>
-                </RightButtonDiv>
+                </MiddleButtonDiv>
 
                 {isModalOpen && (
                     <>

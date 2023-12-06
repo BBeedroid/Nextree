@@ -6,8 +6,8 @@ import {
     Modal,
     Input,
     Button,
-    RightButtonDiv,
     LeftButtonDiv,
+    MiddleButtonDiv,
     ModalInputContainer,
     Textarea,
 } from "../../../styles/theme";
@@ -86,9 +86,9 @@ const CreateClubModal = ({
             <LeftButtonDiv>
                 <Button onClick={handleCreateClub}>생성</Button>
             </LeftButtonDiv>
-            <RightButtonDiv>
+            <MiddleButtonDiv>
                 <Button onClick={onClose}>취소</Button>
-            </RightButtonDiv>
+            </MiddleButtonDiv>
         </Modal>
     );
 };

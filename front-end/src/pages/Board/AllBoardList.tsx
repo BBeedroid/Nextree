@@ -10,7 +10,7 @@ import {
     PointerSpan,
     LeftButtonDiv,
     MiddleButtonDiv,
-    ThirdButtonDiv,
+    RightButtonDiv,
     Overlay,
     Button,
 } from "../../styles/theme";
@@ -58,10 +58,8 @@ const AllBoardList = (): ReactElement => {
     return (
         <Box>
             <Container height="500px">
-                <Title>
-                    {club ? `"${club.clubName}" 게시판 목록` : "게시판 목록"}
-                </Title>
-                <Table>
+                <Title>{club ? `"${club.clubName}"` : "게시판 목록"}</Title>
+                <Table minHeight="350px">
                     {boards.map((board) => (
                         <StyledTr key={board.boardId}>
                             <StyledTd fontSize="1.1rem">
@@ -88,11 +86,11 @@ const AllBoardList = (): ReactElement => {
                     />
                 </MiddleButtonDiv>
                 {membership?.role === "PRESIDENT" && (
-                    <ThirdButtonDiv>
+                    <RightButtonDiv>
                         <Button onClick={toggleModal(setIsModalOpen)}>
                             게시판 생성
                         </Button>
-                    </ThirdButtonDiv>
+                    </RightButtonDiv>
                 )}
 
                 {isModalOpen && (

@@ -7,8 +7,8 @@ import {
     Modal,
     Input,
     Button,
-    RightButtonDiv,
     LeftButtonDiv,
+    MiddleButtonDiv,
     ModalInputContainer,
 } from "../../../styles/theme";
 
@@ -19,9 +19,8 @@ const CreateBoardModal = ({
     onClose: () => void;
     onBoardCreate: () => void;
 }): ReactElement => {
-    const initialBoardState: BoardDTO = { boardTitle: "" };
     const { clubId } = useParams();
-
+    const initialBoardState: BoardDTO = { boardTitle: "" };
     const [board, setBoard] = useState<BoardDTO>(initialBoardState);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -79,9 +78,9 @@ const CreateBoardModal = ({
             <LeftButtonDiv>
                 <Button onClick={handleCreateBoard}>생성</Button>
             </LeftButtonDiv>
-            <RightButtonDiv>
+            <MiddleButtonDiv>
                 <Button onClick={onClose}>취소</Button>
-            </RightButtonDiv>
+            </MiddleButtonDiv>
         </Modal>
     );
 };
