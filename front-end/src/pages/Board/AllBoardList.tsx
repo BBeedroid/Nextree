@@ -15,8 +15,12 @@ import {
     Button,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
-import { BoardDTO, ClubDTO } from "../Util/dtoTypes";
-import { fetchAllBoards, fetchClub } from "./utils/boardservice";
+import { BoardDTO, ClubDTO, MembershipDTO } from "../Util/dtoTypes";
+import {
+    fetchAllBoards,
+    fetchClub,
+    fetchMembership,
+} from "./utils/boardservice";
 import { toggleModal } from "../Util/utilservice";
 import CreateBoardModal from "./utils/CreateBoardModal";
 
@@ -24,6 +28,7 @@ const AllBoardList = (): ReactElement => {
     const { clubId } = useParams();
     const [boards, setBoards] = useState<BoardDTO[]>([]);
     const [club, setClub] = useState<ClubDTO | undefined>();
+    const [membership, setMembership] = useState<MembershipDTO | undefined>();
     const navigate = useNavigate();
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -34,6 +39,8 @@ const AllBoardList = (): ReactElement => {
             fetchAllBoards(clubIdNum).then(setBoards).catch(console.error);
 
             fetchClub(clubIdNum).then(setClub).catch(console.error);
+
+            fetchMembership(clubIdNum).then(setMembership).catch(console.error);
         }
     }, [clubId]);
 
@@ -80,11 +87,13 @@ const AllBoardList = (): ReactElement => {
                         label="전체 클럽 목록"
                     />
                 </MiddleButtonDiv>
-                <ThirdButtonDiv>
-                    <Button onClick={toggleModal(setIsModalOpen)}>
-                        게시판 생성
-                    </Button>
-                </ThirdButtonDiv>
+                {membership?.role === "PRESIDENT" && (
+                    <ThirdButtonDiv>
+                        <Button onClick={toggleModal(setIsModalOpen)}>
+                            게시판 생성
+                        </Button>
+                    </ThirdButtonDiv>
+                )}
 
                 {isModalOpen && (
                     <>

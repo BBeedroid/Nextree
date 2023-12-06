@@ -80,7 +80,7 @@ const loginHandler = (
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
                 const errorMessage =
-                    error.response.data.message || "Login failed";
+                    error.response.data.errorMessage || "Login failed";
                 alert(errorMessage);
                 console.error("An error occurred:", error);
             } else {
