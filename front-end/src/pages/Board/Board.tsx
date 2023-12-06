@@ -62,6 +62,7 @@ const Board = (): ReactElement => {
             });
             console.log("Deleted board: ", response.data);
             alert("성공적으로 게시판을 삭제했습니다.");
+            navigate(`/club/${clubId}`);
         } catch (error) {
             console.error("An error occurred", error);
             alert("게시판 삭제에 실패했습니다.");
