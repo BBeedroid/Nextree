@@ -1,6 +1,12 @@
 import axios from "axios";
 import { SPRING_API_URL } from "../../../config";
-import { ResponseDTO, BoardDTO, PostDTO, ClubDTO } from "../../Util/dtoTypes";
+import {
+    ResponseDTO,
+    BoardDTO,
+    PostDTO,
+    ClubDTO,
+    MembershipDTO,
+} from "../../Util/dtoTypes";
 
 export const fetchAllBoards = async (clubId: number): Promise<BoardDTO[]> => {
     try {
@@ -59,6 +65,49 @@ export const fetchClub = async (
         return response.data.item;
     } catch (error) {
         console.error("클럽 정보를 불러오는 데 실패했습니다.", error);
+        return undefined;
+    }
+};
+
+export const fetchMembership = async (
+    clubId: number,
+): Promise<MembershipDTO | undefined> => {
+    try {
+        const response = await axios.get<ResponseDTO<MembershipDTO>>(
+            `${SPRING_API_URL}/api/membership`,
+            {
+                params: {
+                    clubId,
+                },
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            },
+        );
+        console.log(response.data.item);
+        return response.data.item;
+    } catch (error) {
+        console.error("멤버십 정보를 불러오는 데 실패했습니다.", error);
+        return undefined;
+    }
+};
+
+export const fetchBoard = async (
+    boardId: number,
+): Promise<BoardDTO | undefined> => {
+    try {
+        const response = await axios.get<ResponseDTO<BoardDTO>>(
+            `${SPRING_API_URL}/api/board/${boardId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            },
+        );
+        console.log(response.data.item);
+        return response.data.item;
+    } catch (error) {
+        console.error("게시판 정보를 불러오는 데 실패했습니다.", error);
         return undefined;
     }
 };
