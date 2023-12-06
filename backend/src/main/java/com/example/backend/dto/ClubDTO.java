@@ -30,6 +30,8 @@ public class ClubDTO {
 
     private List<MembershipDTO> memberships;
 
+    private List<BoardDTO> boards;
+
     private ClubDTO() {
         this.memberships = new ArrayList<MembershipDTO>();
     }
@@ -51,6 +53,12 @@ public class ClubDTO {
                 .orElse(Collections.emptyList())
                 .stream()
                 .map(MembershipDTO::new)
+                .collect(Collectors.toList());
+
+        this.boards = Optional.ofNullable(club.getBoards())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(BoardDTO::new)
                 .collect(Collectors.toList());
     }
 
