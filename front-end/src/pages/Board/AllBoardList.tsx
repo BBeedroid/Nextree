@@ -1,5 +1,7 @@
 import React, { useState, useEffect, ReactElement } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { SPRING_API_URL } from "../../config";
 import {
     Box,
     Container,
@@ -44,6 +46,31 @@ const AllBoardList = (): ReactElement => {
         navigate(`/club/${clubId}/board/${boardId}`);
     };
 
+    const handleDeleteClick = async (deleteClubId: number): Promise<void> => {
+        const confirmDelete = window.confirm("정말로 클럽을 삭제하겠습니까?");
+
+        if (confirmDelete) {
+            try {
+                const response = await axios.delete(
+                    `${SPRING_API_URL}/api/club/${deleteClubId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem(
+                                "token",
+                            )}`,
+                        },
+                    },
+                );
+                console.log("Deleted club: ", response.data);
+                alert("성공적으로 클럽을 삭제했습니다.");
+                navigate("/my-club-list");
+            } catch (error) {
+                console.error("An error occurred", error);
+                alert("클럽 삭제에 실패했습니다.");
+            }
+        }
+    };
+
     const refreshBoardList = (): void => {
         if (clubId) {
             const clubIdNum = parseInt(clubId, 10);
@@ -81,12 +108,38 @@ const AllBoardList = (): ReactElement => {
                         label="전체 클럽 목록"
                     />
                 </MiddleButtonDiv>
-                {membership?.role === "PRESIDENT" && (
+                {membership?.role === "PRESIDENT" ? (
                     <RightButtonDiv>
                         <Button onClick={toggleModal(setIsModalOpen)}>
                             게시판 생성
                         </Button>
+                        <Button
+                            margin="5px 0"
+                            width="80px"
+                            height="25px"
+                            background="#FFBE0A"
+                            fontSize="0.8rem"
+                            onClick={() => {
+                                if (clubId) {
+                                    handleDeleteClick(parseInt(clubId, 10));
+                                } else {
+                                    console.log("clubId is undefined");
+                                }
+                            }}
+                        >
+                            클럽 삭제
+                        </Button>
                     </RightButtonDiv>
+                ) : (
+                    <Button
+                        margin="5px 0 5px 80px"
+                        width="80px"
+                        height="25px"
+                        background="#FFBE0A"
+                        fontSize="0.8rem"
+                    >
+                        클럽 탈퇴
+                    </Button>
                 )}
 
                 {isModalOpen && (
