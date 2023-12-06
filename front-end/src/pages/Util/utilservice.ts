@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ResponseDTO, MembershipDTO } from "./dtoTypes";
+import { ResponseDTO, MembershipDTO, MemberDTO } from "./dtoTypes";
 import { SPRING_API_URL } from "../../config";
 
 export const dateFormat = (dateTimeStr: string): string => {
@@ -33,6 +33,29 @@ export const fetchMembership = async (
         return response.data.item;
     } catch (error) {
         console.error("멤버십 정보를 불러오는 데 실패했습니다.", error);
+        return undefined;
+    }
+};
+
+export const fetchLoginUser = async (): Promise<MemberDTO | undefined> => {
+    try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            throw new Error("No token found");
+        }
+
+        const response = await axios.get<ResponseDTO<MemberDTO>>(
+            `${SPRING_API_URL}/api/member/loginuser`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            },
+        );
+        return response.data.item;
+    } catch (error) {
+        console.error("An error occurred", error);
         return undefined;
     }
 };

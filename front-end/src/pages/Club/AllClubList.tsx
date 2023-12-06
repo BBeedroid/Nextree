@@ -1,5 +1,7 @@
 import React, { useState, useEffect, ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { SPRING_API_URL } from "../../config";
 import {
     Box,
     Container,
@@ -14,9 +16,9 @@ import {
     Overlay,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
-import { ClubDTO } from "../Util/dtoTypes";
+import { ClubDTO, MembershipDTO } from "../Util/dtoTypes";
 import { fetchAllClubs, fetchMembership } from "./utils/clubservice";
-import { toggleModal } from "../Util/utilservice";
+import { toggleModal, fetchLoginUser } from "../Util/utilservice";
 import CreateClubModal from "./utils/CreateClubModal";
 
 const AllClubList = (): ReactElement => {
@@ -28,12 +30,43 @@ const AllClubList = (): ReactElement => {
         fetchAllClubs().then(setClubs).catch(console.error);
     }, []);
 
-    const handleClubClick = async (clubId: number): Promise<void> => {
-        const membership = await fetchMembership(clubId);
-        if (!membership) {
-            alert("가입하시겠습니까?");
+    const handleClubClick = async (certainClubId: number): Promise<void> => {
+        const loginUser = await fetchLoginUser();
+        if (!loginUser) {
+            console.error("Failed fetching login user data");
+            return;
+        }
+        const currentUserId = loginUser.memberId;
+
+        const existingMembership = await fetchMembership(certainClubId);
+
+        if (!existingMembership) {
+            const confirmJoin = window.confirm("가입하시겠습니까?");
+
+            if (confirmJoin) {
+                try {
+                    const response = await axios.post<MembershipDTO>(
+                        `${SPRING_API_URL}/api/membership`,
+                        { memberId: currentUserId },
+                        {
+                            params: { clubId: certainClubId },
+                            headers: {
+                                Authorization: `Bearer ${localStorage.getItem(
+                                    "token",
+                                )}`,
+                            },
+                        },
+                    );
+                    console.log(response.data);
+                    alert("성공적으로 클럽에 가입했습니다.");
+                    navigate(`/club/${certainClubId}`);
+                } catch (error) {
+                    console.error("An error occurred", error);
+                    alert("클럽 가입에 실패했습니다.");
+                }
+            }
         } else {
-            navigate(`/club/${clubId}`);
+            navigate(`/club/${certainClubId}`);
         }
     };
 
