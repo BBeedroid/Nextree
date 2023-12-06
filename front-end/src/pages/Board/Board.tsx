@@ -89,64 +89,68 @@ const Board = (): ReactElement => {
         <Box>
             <Container width="950px" height="600px">
                 <Title>{board ? `"${board.boardTitle}"` : "게시글 목록"}</Title>
-                <Table>
-                    <StyledTr>
-                        <StyledTd
-                            fontSize="1.3rem"
-                            fontWeight="bold"
-                            width="700px"
-                        >
-                            제목
-                        </StyledTd>
-                        <StyledTd
-                            fontSize="1.3rem"
-                            fontWeight="bold"
-                            width="100px"
-                        >
-                            작성자
-                        </StyledTd>
-                        <StyledTd
-                            fontSize="1.3rem"
-                            fontWeight="bold"
-                            width="100px"
-                        >
-                            작성일
-                        </StyledTd>
-                        <StyledTd
-                            fontSize="1.3rem"
-                            fontWeight="bold"
-                            width="50px"
-                        >
-                            조회수
-                        </StyledTd>
-                    </StyledTr>
-                    {posts.map((post) => (
-                        <StyledTr key={post.postId}>
-                            <StyledTd fontSize="1.1rem">
-                                <PointerSpan
-                                    onClick={() => {
-                                        if (post.postId !== undefined) {
-                                            handlePostClick(post.postId);
-                                        }
-                                    }}
-                                >
-                                    {post ? post.postTitle : ""}
-                                </PointerSpan>
+                {posts.length > 0 ? (
+                    <Table>
+                        <StyledTr>
+                            <StyledTd
+                                fontSize="1.3rem"
+                                fontWeight="bold"
+                                width="700px"
+                            >
+                                제목
                             </StyledTd>
-                            <StyledTd>
-                                {post ? post.memberNickname : ""}
+                            <StyledTd
+                                fontSize="1.3rem"
+                                fontWeight="bold"
+                                width="100px"
+                            >
+                                작성자
                             </StyledTd>
-                            <StyledTd>
-                                {post && post.createdTime
-                                    ? dateFormat(post.createdTime)
-                                    : ""}
+                            <StyledTd
+                                fontSize="1.3rem"
+                                fontWeight="bold"
+                                width="100px"
+                            >
+                                작성일
                             </StyledTd>
-                            <StyledTd>
-                                {post ? post.postViewCount : ""}
+                            <StyledTd
+                                fontSize="1.3rem"
+                                fontWeight="bold"
+                                width="50px"
+                            >
+                                조회수
                             </StyledTd>
                         </StyledTr>
-                    ))}
-                </Table>
+                        {posts.map((post) => (
+                            <StyledTr key={post.postId}>
+                                <StyledTd fontSize="1.1rem">
+                                    <PointerSpan
+                                        onClick={() => {
+                                            if (post.postId !== undefined) {
+                                                handlePostClick(post.postId);
+                                            }
+                                        }}
+                                    >
+                                        {post ? post.postTitle : ""}
+                                    </PointerSpan>
+                                </StyledTd>
+                                <StyledTd>
+                                    {post ? post.memberNickname : ""}
+                                </StyledTd>
+                                <StyledTd>
+                                    {post && post.createdTime
+                                        ? dateFormat(post.createdTime)
+                                        : ""}
+                                </StyledTd>
+                                <StyledTd>
+                                    {post ? post.postViewCount : ""}
+                                </StyledTd>
+                            </StyledTr>
+                        ))}
+                    </Table>
+                ) : (
+                    <Title fontSize="1.6rem">게시글이 없습니다.</Title>
+                )}
                 <LeftButtonDiv>
                     <NavigateButton
                         path={`/club/${clubId}`}

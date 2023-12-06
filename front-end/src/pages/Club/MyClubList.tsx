@@ -40,32 +40,40 @@ const MyClubList = (): ReactElement => {
         <Box>
             <Container height="500px">
                 <Title>내 클럽 목록</Title>
-                <Table>
-                    <StyledTr>
-                        <StyledTd fontSize="1.3rem" fontWeight="bold">
-                            클럽 이름
-                        </StyledTd>
-                        <StyledTd fontSize="1.3rem" fontWeight="bold">
-                            역할
-                        </StyledTd>
-                    </StyledTr>
-                    {memberships.map((membership) => (
-                        <StyledTr key={membership.memberId}>
-                            <StyledTd fontSize="1.1rem">
-                                <PointerSpan
-                                    onClick={() => {
-                                        if (membership.clubId !== undefined) {
-                                            handleClubClick(membership.clubId);
-                                        }
-                                    }}
-                                >
-                                    {membership.clubName}
-                                </PointerSpan>
+                {memberships.length > 0 ? (
+                    <Table>
+                        <StyledTr>
+                            <StyledTd fontSize="1.3rem" fontWeight="bold">
+                                클럽 이름
                             </StyledTd>
-                            <StyledTd>{membership.role}</StyledTd>
+                            <StyledTd fontSize="1.3rem" fontWeight="bold">
+                                역할
+                            </StyledTd>
                         </StyledTr>
-                    ))}
-                </Table>
+                        {memberships.map((membership) => (
+                            <StyledTr key={membership.memberId}>
+                                <StyledTd fontSize="1.1rem">
+                                    <PointerSpan
+                                        onClick={() => {
+                                            if (
+                                                membership.clubId !== undefined
+                                            ) {
+                                                handleClubClick(
+                                                    membership.clubId,
+                                                );
+                                            }
+                                        }}
+                                    >
+                                        {membership.clubName}
+                                    </PointerSpan>
+                                </StyledTd>
+                                <StyledTd>{membership.role}</StyledTd>
+                            </StyledTr>
+                        ))}
+                    </Table>
+                ) : (
+                    <Title fontSize="1.6rem">가입한 클럽이 없습니다.</Title>
+                )}
                 <LeftButtonDiv>
                     <NavigateButton
                         path="/all-club-list"
