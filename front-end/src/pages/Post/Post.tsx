@@ -2,9 +2,9 @@ import React, { ReactElement, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { SPRING_API_URL } from "../../config";
-import { PostDTO } from "../Util/dtoTypes";
+import { MembershipDTO, PostDTO } from "../Util/dtoTypes";
 import { fetchPost } from "./utils/postservice";
-import { dateFormat } from "../Util/utilservice";
+import { dateFormat, fetchMembership } from "../Util/utilservice";
 import {
     Box,
     Container,
@@ -22,6 +22,7 @@ import NavigateButton from "../Util/NavigateButton";
 const Post = (): ReactElement => {
     const { clubId, boardId, postId } = useParams();
     const [post, setPost] = useState<PostDTO>();
+    const [membership, setMembership] = useState<MembershipDTO>();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -30,11 +31,16 @@ const Post = (): ReactElement => {
         }
     }, [postId]);
 
-    const handleModifyClick = (modifyPostId: number): void => {
-        navigate(
-            `/club/${clubId}/board/${boardId}/post/${modifyPostId}/modify`,
-        );
-    };
+    useEffect(() => {
+        if (clubId) {
+            fetchMembership(parseInt(clubId, 10))
+                .then(setMembership)
+                .catch(console.error);
+        }
+    }, [clubId]);
+
+    const isWriter = post?.memberId === membership?.memberId;
+    const isPresident = membership?.role === "PRESIDENT";
 
     const handleDeleteClick = async (deletePostId: number): Promise<void> => {
         const confirmDelete = window.confirm("정말로 게시글을 삭제하겠습니까?");
@@ -61,9 +67,6 @@ const Post = (): ReactElement => {
             }
         }
     };
-
-    const clubIdNum = clubId ? parseInt(clubId, 10) : null;
-    const boardIdNum = boardId ? parseInt(boardId, 10) : null;
 
     return (
         <Box>
@@ -101,36 +104,33 @@ const Post = (): ReactElement => {
                 )}
                 <LeftButtonDiv>
                     <NavigateButton
-                        path={`/club/${clubIdNum}/board/${boardIdNum}`}
+                        path={`/club/${clubId}/board/${boardId}`}
                         label="게시판으로"
                     />
                 </LeftButtonDiv>
-                <MiddleButtonDiv>
-                    <Button
-                        onClick={() => {
-                            if (postId) {
-                                handleModifyClick(parseInt(postId, 10));
-                            } else {
-                                console.error("postId is undefined");
-                            }
-                        }}
-                    >
-                        수정
-                    </Button>
-                </MiddleButtonDiv>
-                <RightButtonDiv>
-                    <Button
-                        onClick={() => {
-                            if (postId) {
-                                handleDeleteClick(parseInt(postId, 10));
-                            } else {
-                                console.log("postId is undefined");
-                            }
-                        }}
-                    >
-                        삭제
-                    </Button>
-                </RightButtonDiv>
+                {isWriter && (
+                    <MiddleButtonDiv>
+                        <NavigateButton
+                            path={`/club/${clubId}/board/${boardId}/post/${postId}/modify`}
+                            label="수정"
+                        />
+                    </MiddleButtonDiv>
+                )}
+                {(isWriter || isPresident) && (
+                    <RightButtonDiv>
+                        <Button
+                            onClick={() => {
+                                if (postId) {
+                                    handleDeleteClick(parseInt(postId, 10));
+                                } else {
+                                    console.log("postId is undefined");
+                                }
+                            }}
+                        >
+                            삭제
+                        </Button>
+                    </RightButtonDiv>
+                )}
             </Container>
         </Box>
     );
