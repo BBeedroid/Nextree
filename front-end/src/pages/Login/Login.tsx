@@ -11,20 +11,44 @@ import {
     MiddleButtonDiv,
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
+import { LoginDTO } from "../Util/dtoTypes";
 
-interface LoginProps {
-    handleLogin: (memberEmail: string, memberPassword: string) => Promise<void>;
-}
+const Login = (): ReactElement => {
+    const [loginData, setLoginData] = useState<LoginDTO>({});
+    const navigate = useNavigate();
 
-const LoginComponent = ({ handleLogin }: LoginProps): ReactElement => {
-    const [memberEmail, setMemberEmail] = useState<string>("");
-    const [memberPassword, setMemberPassword] = useState<string>("");
+    const handleLogin = async (inputData: LoginDTO): Promise<void> => {
+        try {
+            const response = await axios.post(
+                `${SPRING_API_URL}/auth`,
+                inputData,
+            );
+            const { token, message } = response.data.item;
+            if (token) {
+                localStorage.setItem("token", token);
+                navigate("/my-club-list");
+            } else {
+                console.error("token not received");
+                alert(`"${message}"`);
+            }
+        } catch (catchError) {
+            if (axios.isAxiosError(catchError) && catchError.response) {
+                const errorMessage =
+                    catchError.response.data.errorMessage || "Login failed";
+                alert(errorMessage);
+                console.error("An error occurred: ", catchError);
+            } else {
+                console.error("An error occurred:", catchError);
+                throw new Error("에러가 발생했습니다.");
+            }
+        }
+    };
 
     const submitLogin = async (
         event: React.FormEvent<HTMLFormElement>,
     ): Promise<void> => {
         event.preventDefault();
-        await handleLogin(memberEmail, memberPassword);
+        await handleLogin(loginData);
     };
 
     return (
@@ -33,14 +57,24 @@ const LoginComponent = ({ handleLogin }: LoginProps): ReactElement => {
                 <form onSubmit={submitLogin}>
                     <Input
                         type="email"
-                        value={memberEmail}
-                        onChange={(e) => setMemberEmail(e.target.value)}
+                        value={loginData.memberEmail}
+                        onChange={(e) =>
+                            setLoginData({
+                                ...loginData,
+                                memberEmail: e.target.value,
+                            })
+                        }
                         placeholder="Email"
                     />
                     <Input
                         type="password"
-                        value={memberPassword}
-                        onChange={(e) => setMemberPassword(e.target.value)}
+                        value={loginData.memberPassword}
+                        onChange={(e) =>
+                            setLoginData({
+                                ...loginData,
+                                memberPassword: e.target.value,
+                            })
+                        }
                         placeholder="Password"
                     />
                     <LeftButtonDiv>
@@ -53,51 +87,6 @@ const LoginComponent = ({ handleLogin }: LoginProps): ReactElement => {
             </Container>
         </Box>
     );
-};
-
-const loginHandler = (
-    navigate: ReturnType<typeof useNavigate>,
-): {
-    handleLogin: (memberEmail: string, memberPassword: string) => Promise<void>;
-} => {
-    const handleLogin = async (
-        memberEmail: string,
-        memberPassword: string,
-    ): Promise<void> => {
-        try {
-            const response = await axios.post(`${SPRING_API_URL}/auth`, {
-                memberEmail,
-                memberPassword,
-            });
-            const { token, message } = response.data.item;
-            if (token) {
-                localStorage.setItem("token", token);
-                navigate("/my-club-list");
-            } else {
-                console.error("token not received");
-                alert(`"${message}"`);
-            }
-        } catch (error) {
-            if (axios.isAxiosError(error) && error.response) {
-                const errorMessage =
-                    error.response.data.errorMessage || "Login failed";
-                alert(errorMessage);
-                console.error("An error occurred:", error);
-            } else {
-                console.error("An error occurred:", error);
-                alert("에러가 발생했습니다.");
-            }
-        }
-    };
-
-    return { handleLogin };
-};
-
-const Login = (): ReactElement => {
-    const navigate = useNavigate();
-    const { handleLogin } = loginHandler(navigate);
-
-    return <LoginComponent handleLogin={handleLogin} />;
 };
 
 export default Login;

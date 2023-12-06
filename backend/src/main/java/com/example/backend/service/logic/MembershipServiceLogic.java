@@ -113,10 +113,24 @@ public class MembershipServiceLogic implements MembershipService {
         Membership foundMembership = Optional.ofNullable(membershipStore.findByClub_ClubIdAndMember_MemberId(clubId, currentUserId))
                 .orElseThrow(() -> new NoSuchMembershipException(
                         String.format("No such membership with clubId : [%s] memberId : [%s]", clubId, currentUserId)));
+
+        if (foundMembership.getMember().getMemberId() == currentUserId) {
+            membershipStore.deleteByClub_IdAndMember_Id(clubId, currentUserId);
+        } else {
+            throw new NoPermissionToRemoveMembershipException("Does not have permission to delete this membership.");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void removeByPresident(Long clubId, Long membershipId, Long currentUserId) {
+        Membership foundMembership = Optional.ofNullable(membershipStore.findByClub_ClubIdAndMember_MemberId(clubId, currentUserId))
+                .orElseThrow(() -> new NoSuchMembershipException(
+                        String.format("No such membership with clubId : [%s] memberId : [%s]", clubId, currentUserId)));
         Role currentUserRole = getCurrentUserRoleInClub(clubId, currentUserId);
 
-        if (currentUserRole == Role.PRESIDENT || foundMembership.getMember().getMemberId() == currentUserId) {
-            membershipStore.deleteByClub_IdAndMember_Id(clubId, currentUserId);
+        if (currentUserRole == Role.PRESIDENT) {
+            membershipStore.deleteByCLub_ClubIdAndMembershipId(clubId, membershipId);
         } else {
             throw new NoPermissionToRemoveMembershipException("Does not have permission to delete this membership.");
         }

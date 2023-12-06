@@ -135,4 +135,26 @@ public class MembershipController {
             return ResponseEntity.badRequest().body(responseDTO);
         }
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteMembershipByPresident(@RequestParam("clubId") Long clubId,
+                                                         @RequestParam("membershipId") Long membershipId,
+                                                         HttpServletRequest request) {
+        ResponseDTO<Map<String, String>> responseDTO = new ResponseDTO<>();
+        try {
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
+
+            membershipService.removeByPresident(clubId, membershipId, currentUserId);
+            Map<String, String> returnMap = new HashMap<>();
+            returnMap.put("message", "Successfully removed the membership.");
+            responseDTO.setItem(returnMap);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (NoSuchClubException | NoSuchMemberException | NoSuchMembershipException e) {
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
 }

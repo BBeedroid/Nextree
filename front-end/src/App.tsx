@@ -9,6 +9,7 @@ import Board from "./pages/Board/Board";
 import Post from "./pages/Post/Post";
 import ModifyPost from "./pages/Post/ModifyPost";
 import CreatePost from "./pages/Post/CreatePost";
+import AllMemberList from "./pages/Club/AllMemberList";
 
 function App(): JSX.Element {
     return (
@@ -31,6 +32,7 @@ function App(): JSX.Element {
                 path="/club/:clubId/board/:boardId/create"
                 element={<CreatePost />}
             />
+            <Route path="/club/:clubId/member" element={<AllMemberList />} />
         </Routes>
     );
 }
