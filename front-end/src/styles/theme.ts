@@ -32,10 +32,12 @@ export interface InputProps {
 }
 
 export interface ButtonProps {
+    margin?: string;
     width?: string;
     height?: string;
     color?: string;
     background?: string;
+    fontSize?: string;
 }
 
 export interface ButtonDivProps {
@@ -137,11 +139,12 @@ export const Input = styled.input<InputProps>`
 `;
 
 export const Button = styled.button<ButtonProps>`
+    margin: ${(props) => props.margin};
     width: ${(props) => props.width || "130px"};
     height: ${(props) => props.height || "35px"};
     color: ${(props) => props.color || "#ffffff"};
     background: ${(props) => props.background || "#505050"};
-    font-size: 1rem;
+    font-size: ${(props) => props.fontSize || "1rem"};
 `;
 
 export const LeftButtonDiv = styled.div<ButtonDivProps>`

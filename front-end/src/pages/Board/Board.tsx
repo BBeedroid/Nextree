@@ -165,6 +165,11 @@ const Board = (): ReactElement => {
                             게시판 수정
                         </Button>
                         <Button
+                            margin="5px 0"
+                            width="80px"
+                            height="25px"
+                            background="#FFBE0A"
+                            fontSize="0.8rem"
                             onClick={() => {
                                 if (boardId) {
                                     handleDeleteClick(parseInt(boardId, 10));
