@@ -55,6 +55,24 @@ public class MemberController {
         }
     }
 
+    @GetMapping("/loginuser")
+    public ResponseEntity<?> searchByMemberId(HttpServletRequest request) {
+        ResponseDTO<MemberDTO> responseDTO = new ResponseDTO<>();
+        try {
+            String token = jwtTokenProvider.resolveToken(request);
+            Long currentUserId = jwtTokenProvider.getMemberId(token);
+
+            MemberDTO foundMemberDTO = memberService.findMember(currentUserId);
+            responseDTO.setItem(foundMemberDTO);
+            responseDTO.setStatusCode(HttpStatus.OK.value());
+            return ResponseEntity.ok(responseDTO);
+        } catch (NoSuchMemberException e) {
+            responseDTO.setErrorMessage(e.getMessage());
+            responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+    }
+
     @GetMapping
     public ResponseEntity<?> searchByNickname(@RequestParam("memberNickname") String memberNickname) {
         ResponseDTO<MemberDTO> responseDTO = new ResponseDTO<>();

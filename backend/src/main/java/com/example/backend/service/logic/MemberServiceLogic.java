@@ -37,6 +37,13 @@ public class MemberServiceLogic implements MemberService {
     }
 
     @Override
+    public MemberDTO findMember(Long memberId) {
+         return memberStore.findById(memberId)
+                 .map(member -> new MemberDTO(member))
+                 .orElseThrow(() -> new NoSuchMemberException("No such member with id : " + memberId));
+    }
+
+    @Override
     public List<MemberDTO> findByNickname(String memberNickname) {
         List<Member> members = memberStore.findMembersByMemberNickname(memberNickname);
         if (members.isEmpty()) {
