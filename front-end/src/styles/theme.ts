@@ -36,13 +36,7 @@ export interface ButtonProps {
     background?: string;
 }
 
-export interface RightButtonDivProps {
-    padding?: string;
-    width?: string;
-    height?: string;
-}
-
-export interface LeftButtonDivProps {
+export interface ButtonDivProps {
     padding?: string;
     width?: string;
     height?: string;
@@ -122,18 +116,33 @@ export const Button = styled.button<ButtonProps>`
     font-size: 1rem;
 `;
 
-export const LeftButtonDiv = styled.div<LeftButtonDivProps>`
-    float: left;
+export const LeftButtonDiv = styled.div<ButtonDivProps>`
     padding: ${(props) => props.padding || "5px 0"};
     width: ${(props) => props.width || "150px"};
     height: ${(props) => props.height || "45px"};
+    float: left;
 `;
 
-export const RightButtonDiv = styled.div<RightButtonDivProps>`
-    display: inline-block;
+export const RightButtonDiv = styled.div<ButtonDivProps>`
     padding: ${(props) => props.padding || "5px 0"};
     width: ${(props) => props.width || "150px"};
     height: ${(props) => props.height || "45px"};
+    display: inline-block;
+`;
+
+export const MiddleButtonDiv = styled.div<ButtonDivProps>`
+    padding: ${(props) => props.padding || "5px 0"};
+    width: ${(props) => props.width || "150px"};
+    height: ${(props) => props.height || "45px"};
+    float: left;
+    margin-left: 5%;
+`;
+
+export const ThirdButtonDiv = styled.div<ButtonDivProps>`
+    padding: ${(props) => props.padding || "5px 0"};
+    width: ${(props) => props.width || "150px"};
+    height: ${(props) => props.height || "45px"};
+    float: right;
 `;
 
 export const Title = styled.div<TitleProps>`
