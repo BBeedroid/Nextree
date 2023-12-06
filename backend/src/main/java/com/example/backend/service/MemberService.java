@@ -10,6 +10,7 @@ import java.util.List;
 public interface MemberService {
     void register(MemberDTO memberDTO) throws InvalidEmailException;
     MemberDTO find(String memberEmail);
+    MemberDTO findMember(Long memberId);
     List<MemberDTO> findByNickname(String memberNickname);
     MemberDTO modify(Long memberId, MemberDTO memberDTO) throws InvalidEmailException;
     void remove(Long memberId);
