@@ -35,7 +35,7 @@ public class BoardController {
             responseDTO.setItem(boardDTO);
             responseDTO.setStatusCode(HttpStatus.OK.value());
             return ResponseEntity.ok(responseDTO);
-        } catch (NoSuchClubException | BoardDuplicationException | NoPermissionToCreateBoard e) {
+        } catch (NoSuchClubException | BoardLimitOverException | BoardDuplicationException | NoPermissionToCreateBoard e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
             return ResponseEntity.badRequest().body(responseDTO);
