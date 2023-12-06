@@ -26,6 +26,8 @@ public class ClubDTO {
 
     private LocalDateTime updatedTime;
 
+    private long boardCount;
+
     private List<MembershipDTO> memberships;
 
     private ClubDTO() {
@@ -43,6 +45,7 @@ public class ClubDTO {
         this.clubId = club.getClubId();
         this.createdTime = club.getCreatedTime();
         this.updatedTime = club.getUpdatedTime();
+        this.boardCount = club.getBoardCount();
 
         this.memberships = Optional.ofNullable(club.getMemberships())
                 .orElse(Collections.emptyList())
@@ -56,6 +59,7 @@ public class ClubDTO {
                 .clubId(this.clubId)
                 .clubName(this.clubName)
                 .clubIntro(this.clubIntro)
+                .boardCount(this.boardCount)
                 .build();
     }
 }

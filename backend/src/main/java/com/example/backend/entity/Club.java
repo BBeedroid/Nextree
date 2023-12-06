@@ -32,6 +32,10 @@ public class Club extends BaseTimeEntity {
     @Size(min = 10)
     private String clubIntro;
 
+    @Column(name = "BOARD_COUNT")
+    @Size(max = 5)
+    private long boardCount;
+
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Membership> memberships = new ArrayList<>();
 
@@ -42,6 +46,7 @@ public class Club extends BaseTimeEntity {
                 .clubIntro(this.clubIntro)
                 .createdTime(this.getCreatedTime())
                 .updatedTime(this.getUpdatedTime())
+                .boardCount(this.getBoardCount())
                 .build();
     }
 }
