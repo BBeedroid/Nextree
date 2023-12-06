@@ -1,5 +1,5 @@
 import React, { ReactElement, useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { PostDTO } from "../Util/dtoTypes";
 import { fetchPost } from "./utils/postservice";
 import { dateFormat } from "../Util/utilservice";
@@ -20,12 +20,19 @@ import NavigateButton from "../Util/NavigateButton";
 const Post = (): ReactElement => {
     const { clubId, boardId, postId } = useParams();
     const [post, setPost] = useState<PostDTO>();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (postId) {
             fetchPost(parseInt(postId, 10)).then(setPost).catch(console.error);
         }
     }, [postId]);
+
+    const handleModifyClick = (modifyPostId: number): void => {
+        navigate(
+            `/club/${clubId}/board/${boardId}/post/${modifyPostId}/modify`,
+        );
+    };
 
     const clubIdNum = clubId ? parseInt(clubId, 10) : null;
     const boardIdNum = boardId ? parseInt(boardId, 10) : null;
@@ -71,7 +78,17 @@ const Post = (): ReactElement => {
                     />
                 </LeftButtonDiv>
                 <MiddleButtonDiv>
-                    <Button>수정</Button>
+                    <Button
+                        onClick={() => {
+                            if (postId) {
+                                handleModifyClick(parseInt(postId, 10));
+                            } else {
+                                console.error("postId is undefined");
+                            }
+                        }}
+                    >
+                        수정
+                    </Button>
                 </MiddleButtonDiv>
                 <RightButtonDiv>
                     <Button>삭제</Button>

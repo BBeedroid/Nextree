@@ -7,6 +7,7 @@ import AllClubList from "./pages/Club/AllClubList";
 import AllBoardList from "./pages/Board/AllBoardList";
 import Board from "./pages/Board/Board";
 import Post from "./pages/Post/Post";
+import ModifyPost from "./pages/Post/ModifyPost";
 
 function App(): JSX.Element {
     return (
@@ -20,6 +21,10 @@ function App(): JSX.Element {
             <Route
                 path="/club/:clubId/board/:boardId/post/:postId"
                 element={<Post />}
+            />
+            <Route
+                path="/club/:clubId/board/:boardId/post/:postId/modify"
+                element={<ModifyPost />}
             />
         </Routes>
     );

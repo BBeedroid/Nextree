@@ -82,7 +82,8 @@ export interface TextareaProps {
     margin?: string;
     padding?: string;
     width?: string;
-    height?: string;
+    minHeight?: string;
+    fontSize?: string;
 }
 
 export interface TextBoxProps {
@@ -91,6 +92,22 @@ export interface TextBoxProps {
     width?: string;
     minHeight?: string;
     fontSize?: string;
+}
+
+export interface PostContainerProps {
+    display?: string;
+    flex?: string;
+    align?: string;
+    margin?: string;
+    padding?: string;
+    width?: string;
+    height?: string;
+    border?: string;
+}
+
+export interface ButtonsProps {
+    justify?: string;
+    gap?: string;
 }
 
 export const Box = styled.div<BoxProps>`
@@ -207,7 +224,8 @@ export const Textarea = styled.textarea<TextareaProps>`
     margin: ${(props) => props.margin || "10px 0"};
     padding: ${(props) => props.padding || "10px 20px"};
     width: ${(props) => props.width || "300px"};
-    height: ${(props) => props.height || "250px"};
+    min-height: ${(props) => props.minHeight || "250px"};
+    font-size: ${(props) => props.fontSize || "1rem"};
 `;
 
 export const Overlay = styled.div`
@@ -228,4 +246,22 @@ export const TextBox = styled.div<TextBoxProps>`
     font-size: ${(props) => props.fontSize || "1rem"};
     border: 1px solid grey;
     border-radius: 5px;
+`;
+
+export const PostContainer = styled.div<PostContainerProps>`
+    display: ${(props) => props.display || "flex"};
+    flex-direction: ${(props) => props.flex || "column"};
+    align-items: ${(props) => props.align || "flex-start"};
+    margin: ${(props) => props.padding};
+    padding: ${(props) => props.padding || "10px 20px"};
+    width: ${(props) => props.width || "500px"};
+    height: ${(props) => props.height || "350px"};
+    border: ${(props) => props.border || "1px solid grey"};
+    border-radius: 5px;
+`;
+
+export const ButtonsDiv = styled.div<ButtonsProps>`
+    display: flex;
+    justify-content: ${(props) => props.justify || "flex-start"};
+    gap: ${(props) => props.gap || "10px"};
 `;
