@@ -2,12 +2,8 @@ import React, { ReactElement, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { PostDTO, BoardDTO, MembershipDTO } from "../Util/dtoTypes";
-import {
-    fetchPostsByBoard,
-    fetchBoard,
-    fetchMembership,
-} from "./utils/boardservice";
-import { dateFormat, toggleModal } from "../Util/utilservice";
+import { fetchPostsByBoard, fetchBoard } from "./utils/boardservice";
+import { dateFormat, toggleModal, fetchMembership } from "../Util/utilservice";
 import {
     Box,
     Container,
@@ -98,7 +94,7 @@ const Board = (): ReactElement => {
                         <StyledTd
                             fontSize="1.3rem"
                             fontWeight="bold"
-                            width="650px"
+                            width="700px"
                         >
                             제목
                         </StyledTd>
@@ -119,7 +115,7 @@ const Board = (): ReactElement => {
                         <StyledTd
                             fontSize="1.3rem"
                             fontWeight="bold"
-                            width="100px"
+                            width="50px"
                         >
                             조회수
                         </StyledTd>
@@ -158,7 +154,10 @@ const Board = (): ReactElement => {
                     />
                 </LeftButtonDiv>
                 <MiddleButtonDiv>
-                    <Button>글쓰기</Button>
+                    <NavigateButton
+                        path={`/club/${clubId}/board/${boardId}/create`}
+                        label="글쓰기"
+                    />
                 </MiddleButtonDiv>
                 {membership?.role === "PRESIDENT" && (
                     <RightButtonDiv>

@@ -16,12 +16,8 @@ import {
 } from "../../styles/theme";
 import NavigateButton from "../Util/NavigateButton";
 import { BoardDTO, ClubDTO, MembershipDTO } from "../Util/dtoTypes";
-import {
-    fetchAllBoards,
-    fetchClub,
-    fetchMembership,
-} from "./utils/boardservice";
-import { toggleModal } from "../Util/utilservice";
+import { fetchAllBoards, fetchClub } from "./utils/boardservice";
+import { toggleModal, fetchMembership } from "../Util/utilservice";
 import CreateBoardModal from "./utils/CreateBoardModal";
 
 const AllBoardList = (): ReactElement => {
