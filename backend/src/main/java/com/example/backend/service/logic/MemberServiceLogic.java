@@ -7,12 +7,12 @@ import com.example.backend.service.MemberService;
 import com.example.backend.store.MemberStore;
 import com.example.backend.util.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,15 +44,13 @@ public class MemberServiceLogic implements MemberService {
     }
 
     @Override
-    public List<MemberDTO> findByNickname(String memberNickname) {
-        List<Member> members = memberStore.findMembersByMemberNickname(memberNickname);
+    public Page<MemberDTO> findByNickname(String memberNickname, Pageable pageable) {
+        Page<Member> members = memberStore.findMembersByMemberNickname(memberNickname, pageable);
         if (members.isEmpty()) {
             throw new NoSuchMemberException("No such member with nickname : " + memberNickname);
         }
 
-        return members.stream()
-                .map(member -> new MemberDTO(member))
-                .collect(Collectors.toList());
+        return members.map(MemberDTO::new);
     }
 
     @Override

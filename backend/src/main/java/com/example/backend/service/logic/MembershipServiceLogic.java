@@ -11,12 +11,12 @@ import com.example.backend.store.MembershipStore;
 import com.example.backend.store.ClubStore;
 import com.example.backend.util.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,31 +61,27 @@ public class MembershipServiceLogic implements MembershipService {
     }
 
     @Override
-    public List<MembershipDTO> findAllMembershipsByClub(Long clubId) {
-        Club club = clubStore.findById(clubId)
+    public Page<MembershipDTO> findAllMembershipsByClub(Long clubId, Pageable pageable) {
+        Page<Membership> memberships = Optional.ofNullable(membershipStore.findByClub_ClubId(clubId, pageable))
                 .orElseThrow(() -> new NoSuchClubException("No such club with id : " + clubId));
 
-        return club.getMemberships().stream()
-                .map(membership -> {
-                    MembershipDTO foundMembership = new MembershipDTO(membership);
-                    foundMembership.setMemberNickname(membership.getMember().getMemberNickname());
-                    return foundMembership;
-                })
-                .collect(Collectors.toList());
+        return memberships.map(membership -> {
+            MembershipDTO foundMembership = new MembershipDTO(membership);
+            foundMembership.setMemberNickname(membership.getMember().getMemberNickname());
+            return foundMembership;
+        });
     }
 
     @Override
-    public List<MembershipDTO> findAllMembershipsByMember(Long currentUserId) {
-        Member member = memberStore.findById(currentUserId)
+    public Page<MembershipDTO> findAllMembershipsByMember(Long currentUserId, Pageable pageable) {
+        Page<Membership> memberships = Optional.ofNullable(membershipStore.findByMember_MemberId(currentUserId, pageable))
                 .orElseThrow(() -> new NoSuchMemberException("No such member with id : " + currentUserId));
 
-        return member.getMemberships().stream()
-                .map(membership -> {
-                    MembershipDTO foundMembership = new MembershipDTO(membership);
-                    foundMembership.setClubName(membership.getClub().getClubName());
-                    return foundMembership;
-                })
-                .collect(Collectors.toList());
+        return memberships.map(membership -> {
+            MembershipDTO foundMembership = new MembershipDTO(membership);
+            foundMembership.setClubName(membership.getClub().getClubName());
+            return foundMembership;
+        });
     }
 
     @Override

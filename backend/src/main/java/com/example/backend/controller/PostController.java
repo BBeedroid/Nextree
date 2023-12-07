@@ -10,12 +10,14 @@ import com.example.backend.util.NoSuchBoardException;
 import com.example.backend.util.NoSuchPostingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -62,13 +64,25 @@ public class PostController {
 
     @GetMapping
     public ResponseEntity<?> searchByTitleInBoard(@RequestParam("boardId") Long boardId,
-                                                  @RequestParam("postTitle") String postTitle) {
+                                                  @RequestParam("postTitle") String postTitle,
+                                                  @RequestParam(name = "page", defaultValue = "0") int page,
+                                                  @RequestParam(name = "size", defaultValue = "10") int size) {
         ResponseDTO<PostDTO> responseDTO = new ResponseDTO<>();
         try {
-            List<PostDTO> foundPosts = postService.findByTitleInBoard(boardId, postTitle);
-            responseDTO.setItems(foundPosts);
+            Pageable pageable = PageRequest.of(page, size);
+            Page<PostDTO> foundPosts = postService.findByTitleInBoard(boardId, postTitle, pageable);
+
+            ResponseDTO.PaginationInfo paginationInfo = new ResponseDTO.PaginationInfo();
+            paginationInfo.setTotalPages(foundPosts.getTotalPages());
+            paginationInfo.setCurrentPage(foundPosts.getNumber());
+            paginationInfo.setTotalElements(foundPosts.getTotalElements());
+
+            responseDTO.setPaginationInfo(paginationInfo);
+            responseDTO.setItems(foundPosts.getContent());
+            responseDTO.setLastPage(foundPosts.isLast());
             responseDTO.setStatusCode(HttpStatus.OK.value());
-            return ResponseEntity.ok().body(responseDTO);
+
+            return ResponseEntity.ok(responseDTO);
         } catch (NoSuchBoardException | NoSuchPostingException e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
@@ -77,13 +91,25 @@ public class PostController {
     }
 
     @GetMapping("/list/{boardId}")
-    public ResponseEntity<?> searchByBoard(@PathVariable("boardId") Long boardId) {
+    public ResponseEntity<?> searchByBoard(@PathVariable("boardId") Long boardId,
+                                           @RequestParam(name = "page", defaultValue = "0") int page,
+                                           @RequestParam(name = "size", defaultValue = "10") int size) {
         ResponseDTO<PostDTO> responseDTO = new ResponseDTO<>();
         try {
-            List<PostDTO> foundPosts = postService.findByBoard(boardId);
-            responseDTO.setItems(foundPosts);
+            Pageable pageable = PageRequest.of(page, size);
+            Page<PostDTO> foundPosts = postService.findByBoard(boardId, pageable);
+
+            ResponseDTO.PaginationInfo paginationInfo = new ResponseDTO.PaginationInfo();
+            paginationInfo.setTotalPages(foundPosts.getTotalPages());
+            paginationInfo.setCurrentPage(foundPosts.getNumber());
+            paginationInfo.setTotalElements(foundPosts.getTotalElements());
+
+            responseDTO.setPaginationInfo(paginationInfo);
+            responseDTO.setItems(foundPosts.getContent());
+            responseDTO.setLastPage(foundPosts.isLast());
             responseDTO.setStatusCode(HttpStatus.OK.value());
-            return ResponseEntity.ok().body(responseDTO);
+
+            return ResponseEntity.ok(responseDTO);
         } catch (NoSuchBoardException | NoSuchPostingException e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
@@ -93,13 +119,25 @@ public class PostController {
 
     @GetMapping("/list")
     public ResponseEntity<?> searchByClubAndMember(@RequestParam("clubId") Long clubId,
-                                                   @RequestParam("memberId") Long memberId) {
+                                                   @RequestParam("memberId") Long memberId,
+                                                   @RequestParam(name = "page", defaultValue = "0") int page,
+                                                   @RequestParam(name = "size", defaultValue = "10") int size) {
         ResponseDTO<PostDTO> responseDTO = new ResponseDTO<>();
         try {
-            List<PostDTO> foundPosts = postService.findByClubAndMember(clubId, memberId);
-            responseDTO.setItems(foundPosts);
+            Pageable pageable = PageRequest.of(page, size);
+            Page<PostDTO> foundPosts = postService.findByClubAndMember(clubId, memberId, pageable);
+
+            ResponseDTO.PaginationInfo paginationInfo = new ResponseDTO.PaginationInfo();
+            paginationInfo.setTotalPages(foundPosts.getTotalPages());
+            paginationInfo.setCurrentPage(foundPosts.getNumber());
+            paginationInfo.setTotalElements(foundPosts.getTotalElements());
+
+            responseDTO.setPaginationInfo(paginationInfo);
+            responseDTO.setItems(foundPosts.getContent());
+            responseDTO.setLastPage(foundPosts.isLast());
             responseDTO.setStatusCode(HttpStatus.OK.value());
-            return ResponseEntity.ok().body(responseDTO);
+
+            return ResponseEntity.ok(responseDTO);
         } catch (NoSuchBoardException | NoSuchPostingException e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
