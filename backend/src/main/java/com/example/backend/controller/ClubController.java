@@ -8,6 +8,9 @@ import com.example.backend.util.ClubDuplicationException;
 import com.example.backend.util.NoSuchClubException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -73,12 +76,23 @@ public class ClubController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> searchAllClubs() {
+    public ResponseEntity<?> searchAllClubs(@RequestParam(defaultValue = "0") int page,
+                                            @RequestParam(defaultValue = "10") int size) {
         ResponseDTO<ClubDTO> responseDTO = new ResponseDTO<>();
         try {
-            List<ClubDTO> clubs = clubService.findAllClubs();
-            responseDTO.setItems(clubs);
+            Pageable pageable = PageRequest.of(page, size);
+            Page<ClubDTO> clubPage = clubService.findAllClubs(pageable);
+
+            ResponseDTO.PaginationInfo paginationInfo = new ResponseDTO.PaginationInfo();
+            paginationInfo.setTotalPages(clubPage.getTotalPages());
+            paginationInfo.setCurrentPage(clubPage.getNumber());
+            paginationInfo.setTotalElements(clubPage.getTotalElements());
+
+            responseDTO.setPaginationInfo(paginationInfo);
+            responseDTO.setItems(clubPage.getContent());
+            responseDTO.setLastPage(clubPage.isLast());
             responseDTO.setStatusCode(HttpStatus.OK.value());
+
             return ResponseEntity.ok(responseDTO);
         } catch (NoSuchClubException e) {
             responseDTO.setErrorMessage(e.getMessage());
