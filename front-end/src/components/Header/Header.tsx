@@ -18,10 +18,14 @@ const Header = (): ReactElement => {
 
     return (
         <HeaderContainer>
-            <Title cursor="pointer" onClick={handleLogoClick}>
+            <Title cursor="pointer" hoverColor="true" onClick={handleLogoClick}>
                 🌙 Travel Club
             </Title>
-            <Button background="#bebebe" onClick={() => handleLogout()}>
+            <Button
+                background="#bebebe"
+                color="#505050"
+                onClick={() => handleLogout()}
+            >
                 로그아웃
             </Button>
         </HeaderContainer>

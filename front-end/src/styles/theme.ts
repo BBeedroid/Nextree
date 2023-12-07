@@ -53,6 +53,7 @@ export interface TitleProps {
     fontSize?: string;
     color?: string;
     cursor?: string;
+    hoverColor?: string;
 }
 
 export interface TableProps {
@@ -199,6 +200,10 @@ export const Title = styled.div<TitleProps>`
     color: ${(props) => props.color || "#505050"};
     cursor: ${(props) => props.cursor || "normal"};
     font-weight: bold;
+
+    &:hover {
+        color: ${(props) => (props.hoverColor ? "#FFBE0A" : "#505050")};
+    }
 `;
 
 export const Table = styled.table<TableProps>`
