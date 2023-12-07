@@ -14,6 +14,7 @@ export const darkTheme: DefaultTheme = {
 export interface BoxProps {
     justify?: string;
     align?: string;
+    height?: string;
 }
 
 export interface ContainerProps {
@@ -140,7 +141,7 @@ export const Box = styled.div<BoxProps>`
     justify-content: ${(props) => props.justify || "center"};
     align-items: ${(props) => props.align || "center"};
     width: 100vw;
-    height: 85vh;
+    height: ${(props) => props.height || "75vh"};
 `;
 
 export const Container = styled.div<ContainerProps>`
