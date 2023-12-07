@@ -11,6 +11,8 @@ import com.example.backend.store.MemberStore;
 import com.example.backend.store.MembershipStore;
 import com.example.backend.util.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,10 +61,9 @@ public class ClubServiceLogic implements ClubService {
     }
 
     @Override
-    public List<ClubDTO> findAllClubs() {
-        return clubStore.findAll().stream()
-                .map(ClubDTO::new)
-                .collect(Collectors.toList());
+    public Page<ClubDTO> findAllClubs(Pageable pageable) {
+        return clubStore.findAll(pageable)
+                .map(ClubDTO::new);
     }
 
     @Override
