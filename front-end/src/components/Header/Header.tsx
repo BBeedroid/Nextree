@@ -12,10 +12,20 @@ const Header = (): ReactElement => {
         navigete("/");
     };
 
+    const handleLogoClick = (): void => {
+        navigete("/my-club-list");
+    };
+
     return (
         <HeaderContainer>
-            <Title>🌙 Travel Club</Title>
-            <Button background="#bebebe" onClick={() => handleLogout()}>
+            <Title cursor="pointer" hoverColor="true" onClick={handleLogoClick}>
+                🌙 Travel Club
+            </Title>
+            <Button
+                background="#bebebe"
+                color="#505050"
+                onClick={() => handleLogout()}
+            >
                 로그아웃
             </Button>
         </HeaderContainer>

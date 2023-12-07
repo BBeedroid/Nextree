@@ -52,7 +52,7 @@ const Login = (): ReactElement => {
     };
 
     return (
-        <Box>
+        <Box height="100vh">
             <Container width="350px" height="250px">
                 <form onSubmit={submitLogin}>
                     <Input

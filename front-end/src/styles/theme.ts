@@ -14,6 +14,7 @@ export const darkTheme: DefaultTheme = {
 export interface BoxProps {
     justify?: string;
     align?: string;
+    height?: string;
 }
 
 export interface ContainerProps {
@@ -52,6 +53,8 @@ export interface TitleProps {
     textAlign?: string;
     fontSize?: string;
     color?: string;
+    cursor?: string;
+    hoverColor?: string;
 }
 
 export interface TableProps {
@@ -72,6 +75,10 @@ export interface TdProps {
 export interface TrProps {
     padding?: string;
     width?: string;
+}
+
+export interface PointerSpanProps {
+    color?: string;
 }
 
 export interface ModalProps {
@@ -134,7 +141,7 @@ export const Box = styled.div<BoxProps>`
     justify-content: ${(props) => props.justify || "center"};
     align-items: ${(props) => props.align || "center"};
     width: 100vw;
-    height: 85vh;
+    height: ${(props) => props.height || "75vh"};
 `;
 
 export const Container = styled.div<ContainerProps>`
@@ -192,7 +199,12 @@ export const Title = styled.div<TitleProps>`
     text-align: ${(props) => props.textAlign || "Left"};
     font-size: ${(props) => props.fontSize || "2rem"};
     color: ${(props) => props.color || "#505050"};
+    cursor: ${(props) => props.cursor || "normal"};
     font-weight: bold;
+
+    &:hover {
+        color: ${(props) => (props.hoverColor ? "#FFBE0A" : "#505050")};
+    }
 `;
 
 export const Table = styled.table<TableProps>`
@@ -219,6 +231,10 @@ export const StyledTr = styled.tr<TrProps>`
 
 export const PointerSpan = styled.span`
     cursor: pointer;
+
+    &:hover {
+        color: ${(props) => props.color || "#FFBE0A"};
+    }
 `;
 
 export const Modal = styled.div<ModalProps>`
