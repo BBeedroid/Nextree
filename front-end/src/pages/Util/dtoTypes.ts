@@ -1,7 +1,7 @@
 export interface PaginationInfo {
-    totalPages: number;
-    currentPage: number;
-    totalElements: number;
+    totalPages?: number;
+    currentPage?: number;
+    totalElements?: number;
 }
 
 export interface ResponseDTO<T> {

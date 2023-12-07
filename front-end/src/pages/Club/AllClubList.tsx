@@ -20,15 +20,23 @@ import { ClubDTO, MembershipDTO } from "../Util/dtoTypes";
 import { fetchAllClubs, fetchMembership } from "./utils/clubservice";
 import { toggleModal, fetchLoginUser } from "../Util/utilservice";
 import CreateClubModal from "./utils/CreateClubModal";
+import Pagination from "../Util/Pagination";
 
 const AllClubList = (): ReactElement => {
     const [clubs, setClubs] = useState<ClubDTO[]>([]);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [totalPages, setTotalPages] = useState<number>(0);
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
-        fetchAllClubs().then(setClubs).catch(console.error);
-    }, []);
+        fetchAllClubs(currentPage)
+            .then((response) => {
+                setClubs(response.items);
+                setTotalPages(response.data.paginationInfo.totalPages);
+            })
+            .catch(console.error);
+    }, [currentPage]);
 
     const handleClubClick = async (certainClubId: number): Promise<void> => {
         const loginUser = await fetchLoginUser();
@@ -68,6 +76,10 @@ const AllClubList = (): ReactElement => {
         } else {
             navigate(`/club/${certainClubId}`);
         }
+    };
+
+    const handlePageChange = (pageNumber: number): void => {
+        setCurrentPage(pageNumber);
     };
 
     const refreshClubList = (): void => {
@@ -122,6 +134,10 @@ const AllClubList = (): ReactElement => {
                         />
                     </>
                 )}
+                <Pagination
+                    paginationInfo={{ totalPages, currentPage }}
+                    onPageChange={handlePageChange}
+                />
             </Container>
         </Box>
     );
