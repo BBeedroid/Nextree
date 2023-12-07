@@ -4,7 +4,7 @@ import { ResponseDTO, MembershipDTO, ClubDTO } from "../../Util/dtoTypes";
 
 export const fetchJoinedClubs = async (
     page: number,
-    size: number = 10,
+    size: number = 5,
 ): Promise<ResponseDTO<MembershipDTO>> => {
     try {
         const response = await axios.get<ResponseDTO<MembershipDTO>>(
@@ -29,7 +29,7 @@ export const fetchJoinedClubs = async (
 
 export const fetchAllClubs = async (
     page: number,
-    size: number = 10,
+    size: number = 5,
 ): Promise<ResponseDTO<ClubDTO>> => {
     try {
         const response = await axios.get<ResponseDTO<ClubDTO>>(
@@ -79,7 +79,7 @@ export const fetchMembership = async (
 export const fetchAllMembers = async (
     clubId: number,
     page: number,
-    size: number = 10,
+    size: number = 5,
 ): Promise<ResponseDTO<MembershipDTO>> => {
     try {
         const response = await axios.get<ResponseDTO<MembershipDTO>>(
