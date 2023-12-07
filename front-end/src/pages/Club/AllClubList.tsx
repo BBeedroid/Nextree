@@ -30,10 +30,10 @@ const AllClubList = (): ReactElement => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
-        fetchAllClubs(currentPage)
+        fetchAllClubs(currentPage - 1, 10)
             .then((response) => {
-                setClubs(response.items);
-                setTotalPages(response.data.paginationInfo.totalPages);
+                setClubs(response.items ?? []);
+                setTotalPages(response.paginationInfo?.totalPages ?? 0);
             })
             .catch(console.error);
     }, [currentPage]);
@@ -83,7 +83,12 @@ const AllClubList = (): ReactElement => {
     };
 
     const refreshClubList = (): void => {
-        fetchAllClubs().then(setClubs).catch(console.error);
+        fetchAllClubs(currentPage - 1, 10)
+            .then((response) => {
+                setClubs(response.items ?? []);
+                setTotalPages(response.paginationInfo?.totalPages ?? 0);
+            })
+            .catch(console.error);
     };
 
     return (
@@ -116,6 +121,10 @@ const AllClubList = (): ReactElement => {
                         </StyledTr>
                     ))}
                 </Table>
+                <Pagination
+                    paginationInfo={{ totalPages, currentPage }}
+                    onPageChange={handlePageChange}
+                />
                 <LeftButtonDiv>
                     <NavigateButton path="/my-club-list" label="내 클럽 목록" />
                 </LeftButtonDiv>
@@ -134,10 +143,6 @@ const AllClubList = (): ReactElement => {
                         />
                     </>
                 )}
-                <Pagination
-                    paginationInfo={{ totalPages, currentPage }}
-                    onPageChange={handlePageChange}
-                />
             </Container>
         </Box>
     );

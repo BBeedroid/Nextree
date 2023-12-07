@@ -11,7 +11,7 @@ const Pagination = ({
     paginationInfo,
     onPageChange,
 }: PaginationProps): ReactElement => {
-    const { totalPages, currentPage } = paginationInfo;
+    const { totalPages = 0, currentPage } = paginationInfo;
 
     const pageNumbers = Array.from(
         { length: totalPages },
