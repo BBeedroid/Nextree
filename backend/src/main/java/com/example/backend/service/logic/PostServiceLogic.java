@@ -9,12 +9,10 @@ import com.example.backend.store.MemberStore;
 import com.example.backend.store.PostStore;
 import com.example.backend.util.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -55,50 +53,44 @@ public class PostServiceLogic implements PostService {
     }
 
     @Override
-    public List<PostDTO> findByTitleInBoard(Long boardId, String postTitle) {
+    public Page<PostDTO> findByTitleInBoard(Long boardId, String postTitle, Pageable pageable) {
         boardStore.findById(boardId)
                 .orElseThrow(() -> new NoSuchBoardException("No such board with id : " + boardId));
 
-        List<Post> posts = postStore.findByBoard_BoardIdAndPostTitle(boardId, postTitle);
+        Page<Post> posts = postStore.findByBoard_BoardIdAndPostTitle(boardId, postTitle, pageable);
         if (posts.isEmpty()) {
             throw new NoSuchPostingException("No posts with the title : " + postTitle);
         }
 
-        return posts.stream()
-                .map(Post::EntityToDTO)
-                .collect(Collectors.toList());
+        return posts.map(Post::EntityToDTO);
     }
 
     @Override
-    public List<PostDTO> findByBoard(Long boardId) {
+    public Page<PostDTO> findByBoard(Long boardId, Pageable pageable) {
         boardStore.findById(boardId)
                 .orElseThrow(() -> new NoSuchBoardException("No such board with id : " + boardId));
 
-        List<Post> posts = postStore.findByBoard_BoardId(boardId);
+        Page<Post> posts = postStore.findByBoard_BoardId(boardId, pageable);
         if (posts.isEmpty()) {
                 throw new NoSuchPostingException("No posts in the board.");
         }
 
-        return posts.stream()
-                .map(Post::EntityToDTO)
-                .collect(Collectors.toList());
+        return posts.map(Post::EntityToDTO);
     }
 
     @Override
-    public List<PostDTO> findByClubAndMember(Long clubId, Long memberId) {
+    public Page<PostDTO> findByClubAndMember(Long clubId, Long memberId, Pageable pageable) {
         Club club = clubStore.findById(clubId)
                 .orElseThrow(() -> new NoSuchClubException("No such club with id : " + clubId));
         Member member = memberStore.findById(memberId)
                 .orElseThrow(() -> new NoSuchMemberException("No such member with id : " + memberId));
 
-        List<Post> posts = postStore.findByBoard_ClubAndMember(club, member);
+        Page<Post> posts = postStore.findByBoard_ClubAndMember(club, member, pageable);
         if (posts.isEmpty()) {
             throw new NoSuchPostingException("No posts in the club.");
         }
 
-        return posts.stream()
-                .map(Post::EntityToDTO)
-                .collect(Collectors.toList());
+        return posts.map(Post::EntityToDTO);
     }
 
     @Override

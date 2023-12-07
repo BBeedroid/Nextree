@@ -10,12 +10,12 @@ import com.example.backend.store.BoardStore;
 import com.example.backend.store.ClubStore;
 import com.example.backend.util.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,13 +64,11 @@ public class BoardServiceLogic implements BoardService {
     }
 
     @Override
-    public List<BoardDTO> findByClubId(Long clubId) {
-        List<Board> boards = Optional.ofNullable(boardStore.findByClub_ClubId(clubId))
+    public Page<BoardDTO> findByClubId(Long clubId, Pageable pageable) {
+        Page<Board> boards = Optional.ofNullable(boardStore.findByClub_ClubId(clubId, pageable))
                 .orElseThrow(() -> new NoSuchClubException("No such club with id : " + clubId));
 
-        return boards.stream()
-                .map(Board::EntityToDTO)
-                .collect(Collectors.toList());
+        return boards.map(Board::EntityToDTO);
     }
 
     @Override
