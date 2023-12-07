@@ -59,7 +59,7 @@ const MyClubList = (): ReactElement => {
                 <Title>내 클럽 목록</Title>
                 {memberships.length > 0 ? (
                     <>
-                        <Table>
+                        <Table minHeight="350px">
                             <StyledTr>
                                 <StyledTd fontSize="1.3rem" fontWeight="bold">
                                     클럽 이름
@@ -70,7 +70,7 @@ const MyClubList = (): ReactElement => {
                             </StyledTr>
                             {memberships.map((membership) => (
                                 <StyledTr key={membership.memberId}>
-                                    <StyledTd fontSize="1.1rem">
+                                    <StyledTd fontSize="1.2rem">
                                         <PointerSpan
                                             onClick={() => {
                                                 if (

@@ -91,7 +91,7 @@ const AllMemberList = (): ReactElement => {
                 <Title>{club ? `"${club.clubName}" 회원` : "회원 목록"}</Title>
                 {memberships.length > 0 ? (
                     <>
-                        <Table minHeight="250px">
+                        <Table minHeight="350px">
                             {memberships.map((membership) => {
                                 console.log(membership); // Logging the entire membership object
 
@@ -99,7 +99,7 @@ const AllMemberList = (): ReactElement => {
                                 return (
                                     <StyledTr key={membership.membershipId}>
                                         {membership.role !== "PRESIDENT" ? (
-                                            <StyledTd fontSize="1.1rem">
+                                            <StyledTd fontSize="1.2rem">
                                                 <PointerSpan
                                                     onClick={() => {
                                                         console.log(

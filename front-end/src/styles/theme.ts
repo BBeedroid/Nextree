@@ -52,6 +52,7 @@ export interface TitleProps {
     textAlign?: string;
     fontSize?: string;
     color?: string;
+    cursor?: string;
 }
 
 export interface TableProps {
@@ -72,6 +73,10 @@ export interface TdProps {
 export interface TrProps {
     padding?: string;
     width?: string;
+}
+
+export interface PointerSpanProps {
+    color?: string;
 }
 
 export interface ModalProps {
@@ -192,6 +197,7 @@ export const Title = styled.div<TitleProps>`
     text-align: ${(props) => props.textAlign || "Left"};
     font-size: ${(props) => props.fontSize || "2rem"};
     color: ${(props) => props.color || "#505050"};
+    cursor: ${(props) => props.cursor || "normal"};
     font-weight: bold;
 `;
 
@@ -219,6 +225,10 @@ export const StyledTr = styled.tr<TrProps>`
 
 export const PointerSpan = styled.span`
     cursor: pointer;
+
+    &:hover {
+        color: ${(props) => props.color || "#FFBE0A"};
+    }
 `;
 
 export const Modal = styled.div<ModalProps>`
