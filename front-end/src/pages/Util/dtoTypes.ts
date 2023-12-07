@@ -1,8 +1,16 @@
+export interface PaginationInfo {
+    totalPages: number;
+    currentPage: number;
+    totalElements: number;
+}
+
 export interface ResponseDTO<T> {
     items?: T[];
     item?: T;
     errorMessage?: string;
     statusCode?: number;
+    lastPage?: boolean;
+    paginationInfo?: PaginationInfo;
 }
 
 export interface MembershipDTO {
