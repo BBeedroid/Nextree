@@ -5,7 +5,7 @@ import { ResponseDTO, BoardDTO, PostDTO, ClubDTO } from "../../Util/dtoTypes";
 export const fetchAllBoards = async (
     clubId: number,
     page: number,
-    size: number = 10,
+    size: number = 5,
 ): Promise<ResponseDTO<BoardDTO>> => {
     try {
         const response = await axios.get<ResponseDTO<BoardDTO>>(
@@ -32,7 +32,7 @@ export const fetchAllBoards = async (
 export const fetchPostsByBoard = async (
     boardId: number,
     page: number,
-    size: number = 10,
+    size: number = 5,
 ): Promise<ResponseDTO<PostDTO>> => {
     try {
         const response = await axios.get<ResponseDTO<PostDTO>>(
