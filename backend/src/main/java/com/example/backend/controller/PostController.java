@@ -97,8 +97,6 @@ public class PostController {
         ResponseDTO<PostDTO> responseDTO = new ResponseDTO<>();
         try {
             Pageable pageable = PageRequest.of(page, size);
-            System.out.println("page : " + page);
-            System.out.println("size : " + size);
             Page<PostDTO> foundPosts = postService.findByBoard(boardId, pageable);
 
             ResponseDTO.PaginationInfo paginationInfo = new ResponseDTO.PaginationInfo();
@@ -106,15 +104,10 @@ public class PostController {
             paginationInfo.setCurrentPage(foundPosts.getNumber());
             paginationInfo.setTotalElements(foundPosts.getTotalElements());
 
-            System.out.println("total: " + paginationInfo.getTotalPages());
-            System.out.println("elements: " + paginationInfo.getTotalElements());
-
             responseDTO.setPaginationInfo(paginationInfo);
             responseDTO.setItems(foundPosts.getContent());
             responseDTO.setLastPage(foundPosts.isLast());
             responseDTO.setStatusCode(HttpStatus.OK.value());
-
-            System.out.println("Page size: " + pageable.getPageSize());
 
             return ResponseEntity.ok(responseDTO);
         } catch (NoSuchBoardException | NoSuchPostingException e) {
