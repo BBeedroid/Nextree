@@ -66,7 +66,7 @@ public class PostController {
     public ResponseEntity<?> searchByTitleInBoard(@RequestParam("boardId") Long boardId,
                                                   @RequestParam("postTitle") String postTitle,
                                                   @RequestParam(name = "page", defaultValue = "0") int page,
-                                                  @RequestParam(name = "size", defaultValue = "10") int size) {
+                                                  @RequestParam(name = "size", defaultValue = "5") int size) {
         ResponseDTO<PostDTO> responseDTO = new ResponseDTO<>();
         try {
             Pageable pageable = PageRequest.of(page, size);
@@ -93,7 +93,7 @@ public class PostController {
     @GetMapping("/list/{boardId}")
     public ResponseEntity<?> searchByBoard(@PathVariable("boardId") Long boardId,
                                            @RequestParam(name = "page", defaultValue = "0") int page,
-                                           @RequestParam(name = "size", defaultValue = "10") int size) {
+                                           @RequestParam(name = "size", defaultValue = "5") int size) {
         ResponseDTO<PostDTO> responseDTO = new ResponseDTO<>();
         try {
             Pageable pageable = PageRequest.of(page, size);
@@ -121,7 +121,7 @@ public class PostController {
     public ResponseEntity<?> searchByClubAndMember(@RequestParam("clubId") Long clubId,
                                                    @RequestParam("memberId") Long memberId,
                                                    @RequestParam(name = "page", defaultValue = "0") int page,
-                                                   @RequestParam(name = "size", defaultValue = "10") int size) {
+                                                   @RequestParam(name = "size", defaultValue = "5") int size) {
         ResponseDTO<PostDTO> responseDTO = new ResponseDTO<>();
         try {
             Pageable pageable = PageRequest.of(page, size);

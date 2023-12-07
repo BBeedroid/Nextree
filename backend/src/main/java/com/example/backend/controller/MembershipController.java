@@ -69,7 +69,7 @@ public class MembershipController {
     @GetMapping("/club")
     public ResponseEntity<?> searchMembershipsInClub(@RequestParam("clubId") Long clubId,
                                                      @RequestParam(name = "page", defaultValue = "0") int page,
-                                                     @RequestParam(name = "size", defaultValue = "10") int size) {
+                                                     @RequestParam(name = "size", defaultValue = "5") int size) {
         ResponseDTO<MembershipDTO> responseDTO = new ResponseDTO<>();
         try {
             Pageable pageable = PageRequest.of(page, size);
@@ -96,7 +96,7 @@ public class MembershipController {
     @GetMapping("/member")
     public ResponseEntity<?> searchMembershipsInMember(HttpServletRequest request,
                                                        @RequestParam(name = "page", defaultValue = "0") int page,
-                                                       @RequestParam(name = "size", defaultValue = "10") int size) {
+                                                       @RequestParam(name = "size", defaultValue = "5") int size) {
         ResponseDTO<MembershipDTO> responseDTO = new ResponseDTO<>();
         try {
             Pageable pageable = PageRequest.of(page, size);

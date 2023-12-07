@@ -79,7 +79,7 @@ public class BoardController {
     @GetMapping("/list")
     public ResponseEntity<?> searchBoardByClubId(@RequestParam("clubId") Long clubId,
                                                  @RequestParam(name = "page", defaultValue = "0") int page,
-                                                 @RequestParam(name = "size", defaultValue = "10") int size) {
+                                                 @RequestParam(name = "size", defaultValue = "5") int size) {
         ResponseDTO<BoardDTO> responseDTO = new ResponseDTO<>();
         try {
             Pageable pageable = PageRequest.of(page, size);
