@@ -7,6 +7,9 @@ import com.example.backend.service.BoardService;
 import com.example.backend.util.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -74,12 +77,24 @@ public class BoardController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> searchBoardByClubId(@RequestParam("clubId") Long clubId) {
+    public ResponseEntity<?> searchBoardByClubId(@RequestParam("clubId") Long clubId,
+                                                 @RequestParam(name = "page", defaultValue = "0") int page,
+                                                 @RequestParam(name = "size", defaultValue = "10") int size) {
         ResponseDTO<BoardDTO> responseDTO = new ResponseDTO<>();
         try {
-            List<BoardDTO> foundBoards = boardService.findByClubId(clubId);
-            responseDTO.setItems(foundBoards);
+            Pageable pageable = PageRequest.of(page, size);
+            Page<BoardDTO> boardPage = boardService.findByClubId(clubId, pageable);
+
+            ResponseDTO.PaginationInfo paginationInfo = new ResponseDTO.PaginationInfo();
+            paginationInfo.setTotalPages(boardPage.getTotalPages());
+            paginationInfo.setCurrentPage(boardPage.getNumber());
+            paginationInfo.setTotalElements(boardPage.getTotalElements());
+
+            responseDTO.setPaginationInfo(paginationInfo);
+            responseDTO.setItems(boardPage.getContent());
+            responseDTO.setLastPage(boardPage.isLast());
             responseDTO.setStatusCode(HttpStatus.OK.value());
+
             return ResponseEntity.ok().body(responseDTO);
         } catch (NoSuchClubException e) {
             responseDTO.setErrorMessage(e.getMessage());

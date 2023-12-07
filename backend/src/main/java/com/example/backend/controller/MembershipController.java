@@ -10,13 +10,14 @@ import com.example.backend.util.NoSuchMemberException;
 import com.example.backend.util.NoSuchMembershipException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.AuthenticationException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -66,13 +67,25 @@ public class MembershipController {
     }
 
     @GetMapping("/club")
-    public ResponseEntity<?> searchMembershipsInClub(@RequestParam("clubId") Long clubId) {
+    public ResponseEntity<?> searchMembershipsInClub(@RequestParam("clubId") Long clubId,
+                                                     @RequestParam(name = "page", defaultValue = "0") int page,
+                                                     @RequestParam(name = "size", defaultValue = "10") int size) {
         ResponseDTO<MembershipDTO> responseDTO = new ResponseDTO<>();
         try {
-            List<MembershipDTO> foundMemberships = membershipService.findAllMembershipsByClub(clubId);
-            responseDTO.setItems(foundMemberships);
+            Pageable pageable = PageRequest.of(page, size);
+            Page<MembershipDTO> foundMemberships = membershipService.findAllMembershipsByClub(clubId, pageable);
+
+            ResponseDTO.PaginationInfo paginationInfo = new ResponseDTO.PaginationInfo();
+            paginationInfo.setTotalPages(foundMemberships.getTotalPages());
+            paginationInfo.setCurrentPage(foundMemberships.getNumber());
+            paginationInfo.setTotalElements(foundMemberships.getTotalElements());
+
+            responseDTO.setPaginationInfo(paginationInfo);
+            responseDTO.setItems(foundMemberships.getContent());
+            responseDTO.setLastPage(foundMemberships.isLast());
             responseDTO.setStatusCode(HttpStatus.OK.value());
-            return ResponseEntity.ok().body(responseDTO);
+
+            return ResponseEntity.ok(responseDTO);
         } catch (NoSuchClubException e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
@@ -81,16 +94,28 @@ public class MembershipController {
     }
 
     @GetMapping("/member")
-    public ResponseEntity<?> searchMembershipsInMember(HttpServletRequest request) {
+    public ResponseEntity<?> searchMembershipsInMember(HttpServletRequest request,
+                                                       @RequestParam(name = "page", defaultValue = "0") int page,
+                                                       @RequestParam(name = "size", defaultValue = "10") int size) {
         ResponseDTO<MembershipDTO> responseDTO = new ResponseDTO<>();
         try {
+            Pageable pageable = PageRequest.of(page, size);
             String token = jwtTokenProvider.resolveToken(request);
             Long currentUserId = jwtTokenProvider.getMemberId(token);
 
-            List<MembershipDTO> foundMemberships = membershipService.findAllMembershipsByMember(currentUserId);
-            responseDTO.setItems(foundMemberships);
+            Page<MembershipDTO> foundMemberships = membershipService.findAllMembershipsByMember(currentUserId, pageable);
+
+            ResponseDTO.PaginationInfo paginationInfo = new ResponseDTO.PaginationInfo();
+            paginationInfo.setTotalPages(foundMemberships.getTotalPages());
+            paginationInfo.setCurrentPage(foundMemberships.getNumber());
+            paginationInfo.setTotalElements(foundMemberships.getTotalElements());
+
+            responseDTO.setPaginationInfo(paginationInfo);
+            responseDTO.setItems(foundMemberships.getContent());
+            responseDTO.setLastPage(foundMemberships.isLast());
             responseDTO.setStatusCode(HttpStatus.OK.value());
-            return ResponseEntity.ok().body(responseDTO);
+
+            return ResponseEntity.ok(responseDTO);
         } catch (NoSuchMemberException e) {
             responseDTO.setErrorMessage(e.getMessage());
             responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());

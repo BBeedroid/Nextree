@@ -9,13 +9,14 @@ import com.example.backend.util.MemberDuplicationException;
 import com.example.backend.util.NoSuchMemberException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.AuthenticationException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -74,12 +75,25 @@ public class MemberController {
     }
 
     @GetMapping
-    public ResponseEntity<?> searchByNickname(@RequestParam("memberNickname") String memberNickname) {
+    public ResponseEntity<?> searchByNickname(@RequestParam("memberNickname") String memberNickname,
+                                              @RequestParam(name = "page", defaultValue = "0") int page,
+                                              @RequestParam(name = "size", defaultValue = "10") int size) {
         ResponseDTO<MemberDTO> responseDTO = new ResponseDTO<>();
         try {
-            List<MemberDTO> foundMemberDTOs = memberService.findByNickname(memberNickname);
-            responseDTO.setItems(foundMemberDTOs);
+            Pageable pageable = PageRequest.of(page, size);
+            Page<MemberDTO> foundMembers = memberService.findByNickname(memberNickname, pageable);
+
+
+            ResponseDTO.PaginationInfo paginationInfo = new ResponseDTO.PaginationInfo();
+            paginationInfo.setTotalPages(foundMembers.getTotalPages());
+            paginationInfo.setCurrentPage(foundMembers.getNumber());
+            paginationInfo.setTotalElements(foundMembers.getTotalElements());
+
+            responseDTO.setPaginationInfo(paginationInfo);
+            responseDTO.setItems(foundMembers.getContent());
+            responseDTO.setLastPage(foundMembers.isLast());
             responseDTO.setStatusCode(HttpStatus.OK.value());
+
             return ResponseEntity.ok(responseDTO);
         } catch (NoSuchMemberException e) {
             responseDTO.setErrorMessage(e.getMessage());
