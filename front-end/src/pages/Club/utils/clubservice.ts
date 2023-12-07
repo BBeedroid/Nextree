@@ -2,18 +2,25 @@ import axios from "axios";
 import { SPRING_API_URL } from "../../../config";
 import { ResponseDTO, MembershipDTO, ClubDTO } from "../../Util/dtoTypes";
 
-export const fetchJoinedClubs = async (): Promise<MembershipDTO[]> => {
+export const fetchJoinedClubs = async (
+    page: number,
+    size: number = 10,
+): Promise<ResponseDTO<MembershipDTO>> => {
     try {
         const response = await axios.get<ResponseDTO<MembershipDTO>>(
             `${SPRING_API_URL}/api/membership/member`,
             {
+                params: {
+                    page,
+                    size,
+                },
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
             },
         );
-        console.log(response.data.items);
-        return response.data.items ?? [];
+        console.log(response.data);
+        return response.data;
     } catch (error) {
         console.error("멤버십 목록을 불러오는 데 실패했습니다.", error);
         throw error;
@@ -71,21 +78,25 @@ export const fetchMembership = async (
 
 export const fetchAllMembers = async (
     clubId: number,
-): Promise<MembershipDTO[]> => {
+    page: number,
+    size: number = 10,
+): Promise<ResponseDTO<MembershipDTO>> => {
     try {
         const response = await axios.get<ResponseDTO<MembershipDTO>>(
             `${SPRING_API_URL}/api/membership/club`,
             {
                 params: {
                     clubId,
+                    page,
+                    size,
                 },
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
             },
         );
-        console.log(response.data.items);
-        return response.data.items ?? [];
+        console.log(response.data);
+        return response.data;
     } catch (error) {
         console.error("멤버십 목록을 불러오는 데 실패했습니다.", error);
         throw error;
