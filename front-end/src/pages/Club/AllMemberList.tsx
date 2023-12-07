@@ -29,7 +29,7 @@ const AllMemberList = (): ReactElement => {
         if (clubId) {
             const clubIdNum = parseInt(clubId, 10);
 
-            fetchAllMembers(clubIdNum, currentPage - 1, 10)
+            fetchAllMembers(clubIdNum, currentPage - 1, 5)
                 .then((response) => {
                     setMemberships(response.items ?? []);
                     setTotalPages(response.paginationInfo?.totalPages ?? 0);
@@ -48,7 +48,7 @@ const AllMemberList = (): ReactElement => {
         if (clubId) {
             const clubIdNum = parseInt(clubId, 10);
 
-            fetchAllMembers(clubIdNum, currentPage - 1, 10)
+            fetchAllMembers(clubIdNum, currentPage - 1, 5)
                 .then((response) => {
                     setMemberships(response.items ?? []);
                     setTotalPages(response.paginationInfo?.totalPages ?? 0);

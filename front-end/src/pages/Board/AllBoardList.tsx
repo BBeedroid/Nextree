@@ -38,7 +38,7 @@ const AllBoardList = (): ReactElement => {
     useEffect(() => {
         if (clubId) {
             const clubIdNum = parseInt(clubId, 10);
-            fetchAllBoards(clubIdNum, currentPage - 1, 10)
+            fetchAllBoards(clubIdNum, currentPage - 1, 5)
                 .then((response) => {
                     setBoards(response.items ?? []);
                     setTotalPages(response.paginationInfo?.totalPages ?? 0);
@@ -115,7 +115,7 @@ const AllBoardList = (): ReactElement => {
     const refreshBoardList = (): void => {
         if (clubId) {
             const clubIdNum = parseInt(clubId, 10);
-            fetchAllBoards(clubIdNum, currentPage - 1, 10)
+            fetchAllBoards(clubIdNum, currentPage - 1, 5)
                 .then((response) => {
                     setBoards(response.items ?? []);
                     setTotalPages(response.paginationInfo?.totalPages ?? 0);

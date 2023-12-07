@@ -30,7 +30,7 @@ const AllClubList = (): ReactElement => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
-        fetchAllClubs(currentPage - 1, 10)
+        fetchAllClubs(currentPage - 1, 5)
             .then((response) => {
                 setClubs(response.items ?? []);
                 setTotalPages(response.paginationInfo?.totalPages ?? 0);
@@ -83,7 +83,7 @@ const AllClubList = (): ReactElement => {
     };
 
     const refreshClubList = (): void => {
-        fetchAllClubs(currentPage - 1, 10)
+        fetchAllClubs(currentPage - 1, 5)
             .then((response) => {
                 setClubs(response.items ?? []);
                 setTotalPages(response.paginationInfo?.totalPages ?? 0);

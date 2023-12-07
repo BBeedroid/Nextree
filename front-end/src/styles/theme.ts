@@ -134,7 +134,7 @@ export const Box = styled.div<BoxProps>`
     justify-content: ${(props) => props.justify || "center"};
     align-items: ${(props) => props.align || "center"};
     width: 100vw;
-    height: 100vh;
+    height: 85vh;
 `;
 
 export const Container = styled.div<ContainerProps>`
@@ -301,11 +301,12 @@ export const PageNumber = styled.button<PageNumberProps>`
     border: ${(props) => props.border || "1px solid grey"};
     border-radius: 5px;
     background: ${(props) => props.background || "transparent"};
-    font-size: ${(props) => props.fontSize || "0.7rem"};
+    font-size: ${(props) => props.fontSize || "0.9rem"};
     color: ${(props) => props.color || "#505050"};
     cursor: pointer;
 
     &.active {
-        color: "#FFBE0A";
+        background: ${(props) => props.background || "#505050"};
+        color: ${(props) => props.color || "#FFBE0A"};
     }
 `;
