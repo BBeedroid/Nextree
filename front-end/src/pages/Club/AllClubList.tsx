@@ -95,36 +95,44 @@ const AllClubList = (): ReactElement => {
         <Box>
             <Container height="500px">
                 <Title>클럽 목록</Title>
-                <Table>
-                    <StyledTr>
-                        <StyledTd fontSize="1.3rem" fontWeight="bold">
-                            클럽 이름
-                        </StyledTd>
-                        <StyledTd fontSize="1.3rem" fontWeight="bold">
-                            클럽 소개
-                        </StyledTd>
-                    </StyledTr>
-                    {clubs.map((club) => (
-                        <StyledTr key={club.clubId}>
-                            <StyledTd fontSize="1.1rem">
-                                <PointerSpan
-                                    onClick={() => {
-                                        if (club.clubId !== undefined) {
-                                            handleClubClick(club.clubId);
-                                        }
-                                    }}
-                                >
-                                    {club.clubName}
-                                </PointerSpan>
-                            </StyledTd>
-                            <StyledTd>{club.clubIntro}</StyledTd>
-                        </StyledTr>
-                    ))}
-                </Table>
-                <Pagination
-                    paginationInfo={{ totalPages, currentPage }}
-                    onPageChange={handlePageChange}
-                />
+                {clubs.length > 0 ? (
+                    <>
+                        <Table>
+                            <StyledTr>
+                                <StyledTd fontSize="1.3rem" fontWeight="bold">
+                                    클럽 이름
+                                </StyledTd>
+                                <StyledTd fontSize="1.3rem" fontWeight="bold">
+                                    클럽 소개
+                                </StyledTd>
+                            </StyledTr>
+                            {clubs.map((club) => (
+                                <StyledTr key={club.clubId}>
+                                    <StyledTd fontSize="1.1rem">
+                                        <PointerSpan
+                                            onClick={() => {
+                                                if (club.clubId !== undefined) {
+                                                    handleClubClick(
+                                                        club.clubId,
+                                                    );
+                                                }
+                                            }}
+                                        >
+                                            {club.clubName}
+                                        </PointerSpan>
+                                    </StyledTd>
+                                    <StyledTd>{club.clubIntro}</StyledTd>
+                                </StyledTr>
+                            ))}
+                        </Table>
+                        <Pagination
+                            paginationInfo={{ totalPages, currentPage }}
+                            onPageChange={handlePageChange}
+                        />
+                    </>
+                ) : (
+                    <Title fontSize="1.6rem">클럽이 없습니다.</Title>
+                )}
                 <LeftButtonDiv>
                     <NavigateButton path="/my-club-list" label="내 클럽 목록" />
                 </LeftButtonDiv>
