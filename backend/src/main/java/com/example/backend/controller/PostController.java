@@ -66,7 +66,7 @@ public class PostController {
     public ResponseEntity<?> searchByTitleInBoard(@RequestParam("boardId") Long boardId,
                                                   @RequestParam("postTitle") String postTitle,
                                                   @RequestParam(name = "page", defaultValue = "0") int page,
-                                                  @RequestParam(name = "size", defaultValue = "10") int size) {
+                                                  @RequestParam(name = "size", defaultValue = "5") int size) {
         ResponseDTO<PostDTO> responseDTO = new ResponseDTO<>();
         try {
             Pageable pageable = PageRequest.of(page, size);
@@ -93,10 +93,12 @@ public class PostController {
     @GetMapping("/list/{boardId}")
     public ResponseEntity<?> searchByBoard(@PathVariable("boardId") Long boardId,
                                            @RequestParam(name = "page", defaultValue = "0") int page,
-                                           @RequestParam(name = "size", defaultValue = "10") int size) {
+                                           @RequestParam(name = "size", defaultValue = "5") int size) {
         ResponseDTO<PostDTO> responseDTO = new ResponseDTO<>();
         try {
             Pageable pageable = PageRequest.of(page, size);
+            System.out.println("page : " + page);
+            System.out.println("size : " + size);
             Page<PostDTO> foundPosts = postService.findByBoard(boardId, pageable);
 
             ResponseDTO.PaginationInfo paginationInfo = new ResponseDTO.PaginationInfo();
@@ -104,10 +106,15 @@ public class PostController {
             paginationInfo.setCurrentPage(foundPosts.getNumber());
             paginationInfo.setTotalElements(foundPosts.getTotalElements());
 
+            System.out.println("total: " + paginationInfo.getTotalPages());
+            System.out.println("elements: " + paginationInfo.getTotalElements());
+
             responseDTO.setPaginationInfo(paginationInfo);
             responseDTO.setItems(foundPosts.getContent());
             responseDTO.setLastPage(foundPosts.isLast());
             responseDTO.setStatusCode(HttpStatus.OK.value());
+
+            System.out.println("Page size: " + pageable.getPageSize());
 
             return ResponseEntity.ok(responseDTO);
         } catch (NoSuchBoardException | NoSuchPostingException e) {
@@ -121,7 +128,7 @@ public class PostController {
     public ResponseEntity<?> searchByClubAndMember(@RequestParam("clubId") Long clubId,
                                                    @RequestParam("memberId") Long memberId,
                                                    @RequestParam(name = "page", defaultValue = "0") int page,
-                                                   @RequestParam(name = "size", defaultValue = "10") int size) {
+                                                   @RequestParam(name = "size", defaultValue = "5") int size) {
         ResponseDTO<PostDTO> responseDTO = new ResponseDTO<>();
         try {
             Pageable pageable = PageRequest.of(page, size);
