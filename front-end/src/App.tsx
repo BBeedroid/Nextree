@@ -10,29 +10,77 @@ import Post from "./pages/Post/Post";
 import ModifyPost from "./pages/Post/ModifyPost";
 import CreatePost from "./pages/Post/CreatePost";
 import AllMemberList from "./pages/Club/AllMemberList";
+import MainLayout from "./components/MainLayout/MainLayout";
 
 function App(): JSX.Element {
     return (
         <Routes>
             <Route path="/" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/my-club-list" element={<MyClubList />} />
-            <Route path="/all-club-list" element={<AllClubList />} />
-            <Route path="/club/:clubId" element={<AllBoardList />} />
-            <Route path="/club/:clubId/board/:boardId" element={<Board />} />
+            <Route
+                path="/my-club-list"
+                element={
+                    <MainLayout>
+                        <MyClubList />
+                    </MainLayout>
+                }
+            />
+            <Route
+                path="/all-club-list"
+                element={
+                    <MainLayout>
+                        <AllClubList />
+                    </MainLayout>
+                }
+            />
+            <Route
+                path="/club/:clubId"
+                element={
+                    <MainLayout>
+                        <AllBoardList />
+                    </MainLayout>
+                }
+            />
+            <Route
+                path="/club/:clubId/board/:boardId"
+                element={
+                    <MainLayout>
+                        <Board />
+                    </MainLayout>
+                }
+            />
             <Route
                 path="/club/:clubId/board/:boardId/post/:postId"
-                element={<Post />}
+                element={
+                    <MainLayout>
+                        <Post />
+                    </MainLayout>
+                }
             />
             <Route
                 path="/club/:clubId/board/:boardId/post/:postId/modify"
-                element={<ModifyPost />}
+                element={
+                    <MainLayout>
+                        <ModifyPost />
+                    </MainLayout>
+                }
             />
             <Route
                 path="/club/:clubId/board/:boardId/create"
-                element={<CreatePost />}
+                element={
+                    <MainLayout>
+                        <CreatePost />
+                    </MainLayout>
+                }
             />
-            <Route path="/club/:clubId/member" element={<AllMemberList />} />
+            <Route
+                path="/club/:clubId/member"
+                element={
+                    <MainLayout>
+                        <AllMemberList />
+                    </MainLayout>
+                }
+            />
         </Routes>
     );
 }

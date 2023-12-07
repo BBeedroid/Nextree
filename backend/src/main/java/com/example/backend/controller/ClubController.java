@@ -76,8 +76,8 @@ public class ClubController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> searchAllClubs(@RequestParam(defaultValue = "0") int page,
-                                            @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<?> searchAllClubs(@RequestParam(name = "page", defaultValue = "0") int page,
+                                            @RequestParam(name = "size", defaultValue = "10") int size) {
         ResponseDTO<ClubDTO> responseDTO = new ResponseDTO<>();
         try {
             Pageable pageable = PageRequest.of(page, size);

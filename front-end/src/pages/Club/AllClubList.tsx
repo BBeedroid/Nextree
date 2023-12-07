@@ -20,15 +20,23 @@ import { ClubDTO, MembershipDTO } from "../Util/dtoTypes";
 import { fetchAllClubs, fetchMembership } from "./utils/clubservice";
 import { toggleModal, fetchLoginUser } from "../Util/utilservice";
 import CreateClubModal from "./utils/CreateClubModal";
+import Pagination from "../Util/Pagination";
 
 const AllClubList = (): ReactElement => {
     const [clubs, setClubs] = useState<ClubDTO[]>([]);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [totalPages, setTotalPages] = useState<number>(0);
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
-        fetchAllClubs().then(setClubs).catch(console.error);
-    }, []);
+        fetchAllClubs(currentPage - 1, 10)
+            .then((response) => {
+                setClubs(response.items ?? []);
+                setTotalPages(response.paginationInfo?.totalPages ?? 0);
+            })
+            .catch(console.error);
+    }, [currentPage]);
 
     const handleClubClick = async (certainClubId: number): Promise<void> => {
         const loginUser = await fetchLoginUser();
@@ -70,8 +78,17 @@ const AllClubList = (): ReactElement => {
         }
     };
 
+    const handlePageChange = (pageNumber: number): void => {
+        setCurrentPage(pageNumber);
+    };
+
     const refreshClubList = (): void => {
-        fetchAllClubs().then(setClubs).catch(console.error);
+        fetchAllClubs(currentPage - 1, 10)
+            .then((response) => {
+                setClubs(response.items ?? []);
+                setTotalPages(response.paginationInfo?.totalPages ?? 0);
+            })
+            .catch(console.error);
     };
 
     return (
@@ -104,6 +121,10 @@ const AllClubList = (): ReactElement => {
                         </StyledTr>
                     ))}
                 </Table>
+                <Pagination
+                    paginationInfo={{ totalPages, currentPage }}
+                    onPageChange={handlePageChange}
+                />
                 <LeftButtonDiv>
                     <NavigateButton path="/my-club-list" label="내 클럽 목록" />
                 </LeftButtonDiv>

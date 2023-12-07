@@ -20,18 +20,25 @@ export const fetchJoinedClubs = async (): Promise<MembershipDTO[]> => {
     }
 };
 
-export const fetchAllClubs = async (): Promise<ClubDTO[]> => {
+export const fetchAllClubs = async (
+    page: number,
+    size: number = 10,
+): Promise<ResponseDTO<ClubDTO>> => {
     try {
         const response = await axios.get<ResponseDTO<ClubDTO>>(
             `${SPRING_API_URL}/api/club/list`,
             {
+                params: {
+                    page,
+                    size,
+                },
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
             },
         );
-        console.log(response.data.items);
-        return response.data.items ?? [];
+        console.log(response.data);
+        return response.data;
     } catch (error) {
         console.error("클럽 목록을 불러오는 데 실패했습니다.", error);
         throw error;

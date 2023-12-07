@@ -112,6 +112,23 @@ export interface ButtonsProps {
     gap?: string;
 }
 
+export interface PageContainerProps {
+    justify?: string;
+    margin?: string;
+    padding?: string;
+    width?: string;
+    height?: string;
+}
+
+export interface PageNumberProps {
+    margin?: string;
+    padding?: string;
+    border?: string;
+    background?: string;
+    fontSize?: string;
+    color?: string;
+}
+
 export const Box = styled.div<BoxProps>`
     display: flex;
     justify-content: ${(props) => props.justify || "center"};
@@ -267,4 +284,28 @@ export const ButtonsDiv = styled.div<ButtonsProps>`
     display: flex;
     justify-content: ${(props) => props.justify || "flex-start"};
     gap: ${(props) => props.gap || "10px"};
+`;
+
+export const PageContainer = styled.div<PageContainerProps>`
+    display: flex;
+    justify-content: ${(props) => props.justify || "center"};
+    margin: ${(props) => props.padding || "10px 0"};
+    padding: ${(props) => props.padding || "10px 20px"};
+    width: ${(props) => props.width || "500px"};
+    height: ${(props) => props.height || "50px"};
+`;
+
+export const PageNumber = styled.button<PageNumberProps>`
+    margin: ${(props) => props.padding || "0 5px"};
+    padding: ${(props) => props.padding || "5px 10px"};
+    border: ${(props) => props.border || "1px solid grey"};
+    border-radius: 5px;
+    background: ${(props) => props.background || "transparent"};
+    font-size: ${(props) => props.fontSize || "0.7rem"};
+    color: ${(props) => props.color || "#505050"};
+    cursor: pointer;
+
+    &.active {
+        color: "#FFBE0A";
+    }
 `;
