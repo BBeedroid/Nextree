@@ -97,7 +97,7 @@ const AllClubList = (): ReactElement => {
                 <Title>클럽 목록</Title>
                 {clubs.length > 0 ? (
                     <>
-                        <Table>
+                        <Table minHeight="350px">
                             <StyledTr>
                                 <StyledTd fontSize="1.3rem" fontWeight="bold">
                                     클럽 이름
@@ -108,7 +108,7 @@ const AllClubList = (): ReactElement => {
                             </StyledTr>
                             {clubs.map((club) => (
                                 <StyledTr key={club.clubId}>
-                                    <StyledTd fontSize="1.1rem">
+                                    <StyledTd fontSize="1.2rem">
                                         <PointerSpan
                                             onClick={() => {
                                                 if (club.clubId !== undefined) {

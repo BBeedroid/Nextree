@@ -57,7 +57,7 @@ const SignUp = (): ReactElement => {
     };
 
     return (
-        <Box>
+        <Box height="100vh">
             <Container>
                 <form onSubmit={handleSubmit}>
                     <Input
