@@ -37,7 +37,7 @@ const Board = (): ReactElement => {
     useEffect(() => {
         if (boardId) {
             const boardIdNum = parseInt(boardId, 10);
-            fetchPostsByBoard(boardIdNum, currentPage - 1, 10)
+            fetchPostsByBoard(boardIdNum, currentPage - 1, 5)
                 .then((response) => {
                     setPosts(response.items ?? []);
                     setTotalPages(response.paginationInfo?.totalPages ?? 0);
