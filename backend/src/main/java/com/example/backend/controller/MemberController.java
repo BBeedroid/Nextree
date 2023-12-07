@@ -77,7 +77,7 @@ public class MemberController {
     @GetMapping
     public ResponseEntity<?> searchByNickname(@RequestParam("memberNickname") String memberNickname,
                                               @RequestParam(name = "page", defaultValue = "0") int page,
-                                              @RequestParam(name = "size", defaultValue = "10") int size) {
+                                              @RequestParam(name = "size", defaultValue = "5") int size) {
         ResponseDTO<MemberDTO> responseDTO = new ResponseDTO<>();
         try {
             Pageable pageable = PageRequest.of(page, size);
