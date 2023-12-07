@@ -22,12 +22,15 @@ import { BoardDTO, ClubDTO, MembershipDTO } from "../Util/dtoTypes";
 import { fetchAllBoards, fetchClub } from "./utils/boardservice";
 import { toggleModal, fetchMembership } from "../Util/utilservice";
 import CreateBoardModal from "./utils/CreateBoardModal";
+import Pagination from "../Util/Pagination";
 
 const AllBoardList = (): ReactElement => {
     const { clubId } = useParams();
     const [boards, setBoards] = useState<BoardDTO[]>([]);
     const [club, setClub] = useState<ClubDTO | undefined>();
     const [membership, setMembership] = useState<MembershipDTO | undefined>();
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [totalPages, setTotalPages] = useState<number>(0);
     const navigate = useNavigate();
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -35,13 +38,18 @@ const AllBoardList = (): ReactElement => {
     useEffect(() => {
         if (clubId) {
             const clubIdNum = parseInt(clubId, 10);
-            fetchAllBoards(clubIdNum).then(setBoards).catch(console.error);
+            fetchAllBoards(clubIdNum, currentPage - 1, 10)
+                .then((response) => {
+                    setBoards(response.items ?? []);
+                    setTotalPages(response.paginationInfo?.totalPages ?? 0);
+                })
+                .catch(console.error);
 
             fetchClub(clubIdNum).then(setClub).catch(console.error);
 
             fetchMembership(clubIdNum).then(setMembership).catch(console.error);
         }
-    }, [clubId]);
+    }, [clubId, currentPage]);
 
     const handleClubClick = (boardId: number): void => {
         navigate(`/club/${clubId}/board/${boardId}`);
@@ -100,10 +108,19 @@ const AllBoardList = (): ReactElement => {
         }
     };
 
+    const handlePageChange = (pageNumber: number): void => {
+        setCurrentPage(pageNumber);
+    };
+
     const refreshBoardList = (): void => {
         if (clubId) {
             const clubIdNum = parseInt(clubId, 10);
-            fetchAllBoards(clubIdNum).then(setBoards).catch(console.error);
+            fetchAllBoards(clubIdNum, currentPage - 1, 10)
+                .then((response) => {
+                    setBoards(response.items ?? []);
+                    setTotalPages(response.paginationInfo?.totalPages ?? 0);
+                })
+                .catch(console.error);
         }
     };
 
@@ -112,23 +129,33 @@ const AllBoardList = (): ReactElement => {
             <Container height="500px">
                 <Title>{club ? `"${club.clubName}"` : "게시판 목록"}</Title>
                 {boards.length > 0 ? (
-                    <Table minHeight="350px">
-                        {boards.map((board) => (
-                            <StyledTr key={board.boardId}>
-                                <StyledTd fontSize="1.1rem">
-                                    <PointerSpan
-                                        onClick={() => {
-                                            if (board.boardId !== undefined) {
-                                                handleClubClick(board.boardId);
-                                            }
-                                        }}
-                                    >
-                                        {board.boardTitle}
-                                    </PointerSpan>
-                                </StyledTd>
-                            </StyledTr>
-                        ))}
-                    </Table>
+                    <>
+                        <Table minHeight="350px">
+                            {boards.map((board) => (
+                                <StyledTr key={board.boardId}>
+                                    <StyledTd fontSize="1.1rem">
+                                        <PointerSpan
+                                            onClick={() => {
+                                                if (
+                                                    board.boardId !== undefined
+                                                ) {
+                                                    handleClubClick(
+                                                        board.boardId,
+                                                    );
+                                                }
+                                            }}
+                                        >
+                                            {board.boardTitle}
+                                        </PointerSpan>
+                                    </StyledTd>
+                                </StyledTr>
+                            ))}
+                        </Table>
+                        <Pagination
+                            paginationInfo={{ totalPages, currentPage }}
+                            onPageChange={handlePageChange}
+                        />
+                    </>
                 ) : (
                     <Title fontSize="1.6rem">게시판이 없습니다.</Title>
                 )}
